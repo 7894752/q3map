@@ -40,12 +40,14 @@ __inline int CeilToInt( float value ) {
 }
 
 __inline int RoundToInt( float value ) {
-	double bias = 9.31322574615478515625e-10;
 	int result;
-	__asm {
-		fld value
-		fadd bias
-		fistp result
+	{
+		double bias = 9.31322574615478515625e-10;
+		__asm {
+			fld value
+			fadd bias
+			fistp result
+		}
 	}
 	return result;
 }
