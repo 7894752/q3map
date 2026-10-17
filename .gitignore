@@ -1,0 +1,12 @@
+build/out/
+build/toolchain/
+__pycache__/
+*.pyc
+*.obj
+*.pdb
+*.ilk
+*.exe
+*.dll
+*.lib
+*.pch
+*.tmp

@@ -1,0 +1,567 @@
+{
+ "_comment": "Static build manifest; build.py reads this file only.",
+ "compile_flag_sets": {
+  "gs": [
+   "/nologo",
+   "/c",
+   "/O2",
+   "/Ob1",
+   "/GF",
+   "/Gy",
+   "/MT",
+   "/DWIN32",
+   "/DNDEBUG",
+   "/D_CONSOLE",
+   "/Zi",
+   "/GS"
+  ],
+  "gs_ehsc": [
+   "/nologo",
+   "/c",
+   "/O2",
+   "/Ob1",
+   "/GF",
+   "/Gy",
+   "/MT",
+   "/DWIN32",
+   "/DNDEBUG",
+   "/D_CONSOLE",
+   "/Zi",
+   "/GS",
+   "/EHsc"
+  ],
+  "gs_ehsc_yx": [
+   "/nologo",
+   "/c",
+   "/O2",
+   "/Ob1",
+   "/GF",
+   "/Gy",
+   "/MT",
+   "/DWIN32",
+   "/DNDEBUG",
+   "/D_CONSOLE",
+   "/GS",
+   "/EHsc",
+   "/YX"
+  ],
+  "nogs": [
+   "/nologo",
+   "/c",
+   "/O2",
+   "/Ob1",
+   "/GF",
+   "/Gy",
+   "/MT",
+   "/DWIN32",
+   "/DNDEBUG",
+   "/D_CONSOLE",
+   "/Zi"
+  ]
+ },
+ "translation_units": [
+  {
+   "source": "src/q3map/brush.c",
+   "flags": "nogs",
+   "obj": "q3map_brush_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/brush_primit.c",
+   "flags": "nogs",
+   "obj": "q3map_brush_primit_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/bsp.c",
+   "flags": "gs",
+   "obj": "q3map_bsp_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/common/bspfile.c",
+   "flags": "gs",
+   "obj": "common_bspfile_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/facebsp.c",
+   "flags": "nogs",
+   "obj": "q3map_facebsp_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/fog.c",
+   "flags": "nogs",
+   "obj": "q3map_fog_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/gldraw.c",
+   "flags": "gs",
+   "obj": "q3map_gldraw_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/glfile.c",
+   "flags": "gs",
+   "obj": "q3map_glfile_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/common/imagelib.c",
+   "flags": "gs",
+   "obj": "common_imagelib_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/leakfile.c",
+   "flags": "gs",
+   "obj": "q3map_leakfile_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/lightmaps.c",
+   "flags": "gs",
+   "obj": "q3map_lightmaps_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/map.c",
+   "flags": "gs",
+   "obj": "q3map_map_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/mesh.c",
+   "flags": "gs",
+   "obj": "q3map_mesh_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/common/mutex.c",
+   "flags": "nogs",
+   "obj": "common_mutex_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/tristrip.c",
+   "flags": "nogs",
+   "obj": "q3map_tristrip_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/tristrip_nv.cpp",
+   "flags": "gs_ehsc",
+   "obj": "q3map_tristrip_nv_cpp.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/patch.c",
+   "flags": "gs",
+   "obj": "q3map_patch_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/common/polylib.c",
+   "flags": "nogs",
+   "obj": "common_polylib_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/portals.c",
+   "flags": "gs",
+   "obj": "q3map_portals_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/prtfile.c",
+   "flags": "gs",
+   "obj": "q3map_prtfile_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/shaders.c",
+   "flags": "gs",
+   "obj": "q3map_shaders_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/surface.c",
+   "flags": "gs",
+   "obj": "q3map_surface_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/terrain.c",
+   "flags": "gs",
+   "obj": "q3map_terrain_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/common/threads.c",
+   "flags": "nogs",
+   "obj": "common_threads_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/tjunction.c",
+   "flags": "nogs",
+   "obj": "q3map_tjunction_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/tree.c",
+   "flags": "nogs",
+   "obj": "q3map_tree_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/tris.c",
+   "flags": "gs",
+   "obj": "q3map_tris_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/vis.c",
+   "flags": "gs",
+   "obj": "q3map_vis_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/visflow.c",
+   "flags": "gs",
+   "obj": "q3map_visflow_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/q3map/writebsp.c",
+   "flags": "gs",
+   "obj": "q3map_writebsp_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/code/qcommon/files.c",
+   "flags": "gs",
+   "obj": "code_qcommon_files_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/universal/com_math.c",
+   "flags": "nogs",
+   "obj": "universal_com_math_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/code/qcommon/common.c",
+   "flags": "gs",
+   "obj": "code_qcommon_common_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/universal/com_memory.c",
+   "flags": "gs",
+   "obj": "universal_com_memory_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/universal/cvar.c",
+   "flags": "gs",
+   "obj": "universal_cvar_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/universal/q_parse.cpp",
+   "flags": "gs",
+   "obj": "universal_q_parse_cpp.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/common/q_shared.c",
+   "flags": "gs",
+   "obj": "common_q_shared_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/win32/win_shared.c",
+   "flags": "gs",
+   "obj": "win32_win_shared_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/adler32.c",
+   "flags": "gs",
+   "obj": "libs_zlib_adler32_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/compress.c",
+   "flags": "gs",
+   "obj": "libs_zlib_compress_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/crc32.c",
+   "flags": "gs",
+   "obj": "libs_zlib_crc32_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/deflate.c",
+   "flags": "gs",
+   "obj": "libs_zlib_deflate_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/infblock.c",
+   "flags": "gs",
+   "obj": "libs_zlib_infblock_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/infcodes.c",
+   "flags": "gs",
+   "obj": "libs_zlib_infcodes_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/inffast.c",
+   "flags": "gs",
+   "obj": "libs_zlib_inffast_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/inflate.c",
+   "flags": "gs",
+   "obj": "libs_zlib_inflate_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/inftrees.c",
+   "flags": "gs",
+   "obj": "libs_zlib_inftrees_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/infutil.c",
+   "flags": "gs",
+   "obj": "libs_zlib_infutil_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/trees.c",
+   "flags": "gs",
+   "obj": "libs_zlib_trees_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/uncompr.c",
+   "flags": "gs",
+   "obj": "libs_zlib_uncompr_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/code/qcommon/unzip.c",
+   "flags": "gs",
+   "obj": "code_qcommon_unzip_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/zlib/zutil.c",
+   "flags": "gs",
+   "obj": "libs_zlib_zutil_c.obj",
+   "project": "q3map"
+  },
+  {
+   "source": "src/libs/jpeg6/jpgload.cpp",
+   "flags": "nogs",
+   "obj": "libs_jpeg6_jpgload_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdapimin.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdapimin_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdapistd.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdapistd_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdatasrc.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdatasrc_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jerror.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jerror_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdinput.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdinput_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdmarker.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdmarker_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jmemmgr.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jmemmgr_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jcomapi.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jcomapi_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdmaster.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdmaster_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jutils.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jutils_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jmemnobs.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jmemnobs_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdmainct.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdmainct_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdcoefct.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdcoefct_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdhuff.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdhuff_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jddctmgr.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jddctmgr_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdpostct.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdpostct_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdsample.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdsample_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jdcolor.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jdcolor_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/code/jpeg-6/jidctflt.cpp",
+   "flags": "nogs",
+   "obj": "code_jpeg-6_jidctflt_cpp.obj",
+   "project": "jpeg6"
+  },
+  {
+   "source": "src/libs/cmdlib/cmdlib.cpp",
+   "flags": "nogs",
+   "obj": "libs_cmdlib_cmdlib_cpp.obj",
+   "project": "cmdlib"
+  },
+  {
+   "source": "src/libs/nvtristrip/NvTriStrip.cpp",
+   "flags": "gs_ehsc_yx",
+   "obj": "libs_nvtristrip_NvTriStrip_cpp.obj",
+   "project": "nvtristrip"
+  },
+  {
+   "source": "src/libs/nvtristrip/NvTriStripObjects.cpp",
+   "flags": "gs_ehsc_yx",
+   "obj": "libs_nvtristrip_NvTriStripObjects_cpp.obj",
+   "project": "nvtristrip"
+  }
+ ],
+ "static_libraries": {
+  "jpeg6": [
+   "code_jpeg-6_jcomapi_cpp.obj",
+   "code_jpeg-6_jdapimin_cpp.obj",
+   "code_jpeg-6_jdapistd_cpp.obj",
+   "code_jpeg-6_jdatasrc_cpp.obj",
+   "code_jpeg-6_jdcoefct_cpp.obj",
+   "code_jpeg-6_jdcolor_cpp.obj",
+   "code_jpeg-6_jddctmgr_cpp.obj",
+   "code_jpeg-6_jdhuff_cpp.obj",
+   "code_jpeg-6_jdinput_cpp.obj",
+   "code_jpeg-6_jdmainct_cpp.obj",
+   "code_jpeg-6_jdmarker_cpp.obj",
+   "code_jpeg-6_jdmaster_cpp.obj",
+   "code_jpeg-6_jdpostct_cpp.obj",
+   "code_jpeg-6_jdsample_cpp.obj",
+   "code_jpeg-6_jerror_cpp.obj",
+   "code_jpeg-6_jidctflt_cpp.obj",
+   "code_jpeg-6_jmemmgr_cpp.obj",
+   "code_jpeg-6_jmemnobs_cpp.obj",
+   "code_jpeg-6_jutils_cpp.obj",
+   "libs_jpeg6_jpgload_cpp.obj"
+  ],
+  "cmdlib": [
+   "libs_cmdlib_cmdlib_cpp.obj"
+  ],
+  "nvtristrip": [
+   "libs_nvtristrip_NvTriStrip_cpp.obj",
+   "libs_nvtristrip_NvTriStripObjects_cpp.obj"
+  ]
+ },
+ "link_flags": [
+  "/NOLOGO",
+  "/INCREMENTAL:NO",
+  "/DEBUG",
+  "/STACK:4194304,4096",
+  "/PDBALTPATH:d:\\projects\\mk\\bin\\q3map.pdb"
+ ],
+ "link_include_roots": [],
+ "link_libraries": [
+  "@jpeg6",
+  "@cmdlib",
+  "glaux.lib",
+  "GLU32.lib",
+  "WSOCK32.lib",
+  "OPENGL32.lib",
+  "KERNEL32.lib",
+  "USER32.lib",
+  "GDI32.lib",
+  "ADVAPI32.lib",
+  "@nvtristrip"
+ ],
+ "link_inputs_note": "objects of project q3map in translation_units order, then link_libraries; libcmt/oldnames/libcpmt are implicit (the objects own DEFAULTLIB directives)"
+}

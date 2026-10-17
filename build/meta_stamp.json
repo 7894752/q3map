@@ -1,0 +1,7 @@
+{
+  "source": "extracted once from the original q3map.exe (values only)",
+  "timestamp": 1066415085,
+  "rsds_guid_hex": "3133e26fa50be749b073f709cb991e0a",
+  "rsds_age": 163,
+  "notes": "timestamp/GUID/age cannot be produced by link.exe 7.00.9466; stamped by stamp_meta.py apply"
+}

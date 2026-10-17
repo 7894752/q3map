@@ -1,0 +1,1023 @@
+{
+ "description": "Files of the verified Visual C++ 7.0 (13.00.9466) toolchain, taken from public archive.org images of retail Microsoft media. Nothing is stored in the repository; build/fetch_toolchain.py downloads the images, extracts only these files and verifies every sha256.",
+ "sources": {
+  "disc1": {
+   "item": "X08-65717",
+   "title": "Visual Studio .NET 2002 Professional, Disc 1",
+   "filename": "2002-02_X08-65717_X08-65353_VSPROD1.7z",
+   "size": 311497891,
+   "sha256": "29ee9517c033a99621f9753cf061658b25abae64328952674abe30a19088b9e4",
+   "image": "*.mdf"
+  },
+  "disc2": {
+   "item": "X08-65718",
+   "title": "Visual Studio .NET 2002 Professional, Disc 2",
+   "filename": "2002-02_X08-65718_X08-49474_VSPROD2.7z",
+   "size": 550141135,
+   "sha256": "7e6f479b2df7cafa0ade8b0d20c0dc5be9dbdc6c737e26347989390fd76c8f6a",
+   "image": "*.mdf"
+  },
+  "psdk": {
+   "item": "microsoft-msdn-disc-0004.3-platform-sdk-august-2001-edition-english-october-2001-cd",
+   "title": "MSDN Disc 0004.3 Platform SDK, August 2001 edition",
+   "filename": "Microsoft.MSDN.Disc.0004.3.Platform.SDK.August.2001.Edition.English.October.2001.CD.7z",
+   "size": 570733859,
+   "sha256": "678789e62de0a5136a32ca0fa44a61646950c640da8dd0a0d92cb916096e3d06",
+   "image": "*.mdf"
+  }
+ },
+ "files": [
+  {
+   "dest": "vc7/bin/cl.exe",
+   "sha256": "05be307f04d8c3a9c211b77e85a63992be4642f14b4de31c04f9bb3d7bb1d65f",
+   "size": 81920,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/bin/cl.exe"
+  },
+  {
+   "dest": "vc7/bin/c1.dll",
+   "sha256": "b4992fc795a21fd808f156f13d129ce8ccc0d6fbcbf4187f0a9db349678db989",
+   "size": 917504,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/bin/c1.dll"
+  },
+  {
+   "dest": "vc7/bin/c1xx.dll",
+   "sha256": "30c3affd786752b4a037c4b4f035b7962d1fb5a335366e093bc73d0eb02e5558",
+   "size": 2105344,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/bin/c1xx.dll"
+  },
+  {
+   "dest": "vc7/bin/c2.dll",
+   "sha256": "3755d22dd896ca0045b22b0478d6ad56185d0c98845e2aa2e1d2300460289ad0",
+   "size": 1753088,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/bin/c2.dll"
+  },
+  {
+   "dest": "vc7/bin/lib.exe",
+   "sha256": "8973d6e9643ea23e1815623252ee30cecc64dd1ed2071003e889ec2ca3013dca",
+   "size": 5120,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/bin/lib.exe"
+  },
+  {
+   "dest": "vc7/bin/link.exe",
+   "sha256": "1560d85164dfb763dd13f90f33ff9c6f1cd80f2afada03eed8d0a314593581f1",
+   "size": 643072,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/bin/link.exe"
+  },
+  {
+   "dest": "vc7/bin/mspdb70.dll",
+   "sha256": "8e8931d665acd4f3cd587a51ea608e05a0fa8d84ecdbb584cdea9cbd5ed1d70d",
+   "size": 233472,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Common7/IDE/mspdb70.dll"
+  },
+  {
+   "dest": "vc7/bin/msobj10.dll",
+   "sha256": "b5c31f9ed0e58367bcde77d118e8d97acde3a46c5287f59672448156aae560df",
+   "size": 73728,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Common7/IDE/msobj10.dll"
+  },
+  {
+   "dest": "vc7/lib/libcmt.lib",
+   "sha256": "8815af7b9b6e0e28b77708ede25ab7ecfc4b05e1d8811f092c516cff5ce19d94",
+   "size": 2835338,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/lib/libcmt.lib"
+  },
+  {
+   "dest": "vc7/lib/libcpmt.lib",
+   "sha256": "92d0b6d397e420138046b286a824bc8cc70c90a96f69042139d181b88e2eb4d8",
+   "size": 3238918,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/lib/libcpmt.lib"
+  },
+  {
+   "dest": "vc7/lib/oldnames.lib",
+   "sha256": "61d891d7f53dee0b38d22d6dce04374ce85e101a5a1b6c981269274979f073c5",
+   "size": 65372,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/lib/oldnames.lib"
+  },
+  {
+   "dest": "vc7/include/assert.h",
+   "sha256": "2cd514503357287f25adc6c3eb607f9cf490d920a1d5ad2e02f1a87d82a705a6",
+   "size": 960,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/assert.h"
+  },
+  {
+   "dest": "vc7/include/climits",
+   "sha256": "b2ead912c14ebed582f664281a3423d8121a3adf21912b98f117654d12ef6772",
+   "size": 335,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/climits"
+  },
+  {
+   "dest": "vc7/include/cstddef",
+   "sha256": "c94d771b379f14d03c59382fee71b15cef796eb2af3e57f6deb8cd96c57a1b97",
+   "size": 493,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/cstddef"
+  },
+  {
+   "dest": "vc7/include/cstdio",
+   "sha256": "217dfce71df7a323ab083f6d4d0a48dfff433829a5db6569ee185fa725216559",
+   "size": 1166,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/cstdio"
+  },
+  {
+   "dest": "vc7/include/cstdlib",
+   "sha256": "30501747a298758692b46929da2e564267db17b6e508d7cdf3df21db1ae2937d",
+   "size": 946,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/cstdlib"
+  },
+  {
+   "dest": "vc7/include/cstring",
+   "sha256": "dd88c7ab8e119940c8b8f33de97db135cac842211b6e5b38b56a33c6630acd6d",
+   "size": 844,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/cstring"
+  },
+  {
+   "dest": "vc7/include/ctype.h",
+   "sha256": "5872bf5564aced8eeacd6fea07bacd6fbe99dfd431946d58ce6d1ec381fe77a1",
+   "size": 9969,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/ctype.h"
+  },
+  {
+   "dest": "vc7/include/cwchar",
+   "sha256": "61ba898e7ecd8d55911a216f2b646f60dd0129d6c0da06e8bfa97eb1587f27d9",
+   "size": 1407,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/cwchar"
+  },
+  {
+   "dest": "vc7/include/direct.h",
+   "sha256": "f85e42e7f83280273ad27a6bea623e09feea8504ba4e00c58bd49dd6fa09547e",
+   "size": 3018,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/direct.h"
+  },
+  {
+   "dest": "vc7/include/eh.h",
+   "sha256": "2eb8dab28f9cbc62a817040780a0fd503d28101b96c182a65e00b57311bd431b",
+   "size": 1705,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/eh.h"
+  },
+  {
+   "dest": "vc7/include/errno.h",
+   "sha256": "d6e8bc6a655f1f66cfbe8a2a5dab28938355e2554d078defd5b4449fb0a2b652",
+   "size": 2422,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/errno.h"
+  },
+  {
+   "dest": "vc7/include/exception",
+   "sha256": "a2bb7818f4d3117f06e55ec7bd8bf8a2dce69a634f6dab806d858cb5633482ad",
+   "size": 3953,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/exception"
+  },
+  {
+   "dest": "vc7/include/excpt.h",
+   "sha256": "ab38ae3d19f7cf7e9ae08e624ed320baecc6d47d26f0ed4a94ec7005ea8a973d",
+   "size": 3569,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/excpt.h"
+  },
+  {
+   "dest": "vc7/include/float.h",
+   "sha256": "f71a5f869a5c2af1289eed4d4e9c2e43fb429f1bf6cd057394a8f913fed26c0d",
+   "size": 11292,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/float.h"
+  },
+  {
+   "dest": "vc7/include/functional",
+   "sha256": "d024261c0ea16cef8fbc56a3ce04ab5b863167f88b4b3ba5ec3ae290fd435927",
+   "size": 17985,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/functional"
+  },
+  {
+   "dest": "vc7/include/io.h",
+   "sha256": "b38743f69ce01df42a904458255975391e0c1f1e64a04222ab41d3871de12266",
+   "size": 8403,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/io.h"
+  },
+  {
+   "dest": "vc7/include/iosfwd",
+   "sha256": "f2f635b6973f3cdba439baa5cc0d693deb4bb74d833f2e7b837b7b1f1fec4c40",
+   "size": 14965,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/iosfwd"
+  },
+  {
+   "dest": "vc7/include/iterator",
+   "sha256": "a73671f52d09a3ddff060dda99a7f7deb150442e608d3cc91fa737d9aca4981f",
+   "size": 10105,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/iterator"
+  },
+  {
+   "dest": "vc7/include/limits.h",
+   "sha256": "8104bad5bcc01dea0f1e4fa6c6a88ffedfd698fe0ac4fce0127ca8fba8f38414",
+   "size": 4117,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/limits.h"
+  },
+  {
+   "dest": "vc7/include/list",
+   "sha256": "6abf323b04e4424be91848b6a98c669aeb58764d04479ff92a1bb5c3a2b50716",
+   "size": 26089,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/list"
+  },
+  {
+   "dest": "vc7/include/math.h",
+   "sha256": "45636258c2ffccc6d0bb8d605b0e0cfd3924837b731928e1d65436be8b5292ab",
+   "size": 21414,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/math.h"
+  },
+  {
+   "dest": "vc7/include/memory",
+   "sha256": "666f4e934d13c25a38a2680c9ed965fdc28f2e9321e94307ab57838d93c4b3c2",
+   "size": 13234,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/memory"
+  },
+  {
+   "dest": "vc7/include/memory.h",
+   "sha256": "c302059da89a5a69d90161cb877f25cd600abf87477a6ff831608b5a2a80b06d",
+   "size": 2129,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/memory.h"
+  },
+  {
+   "dest": "vc7/include/new",
+   "sha256": "8a6c49269a967a7585d357ab60811aadf3312e8b4ff1a1883ca76fce57e0e1e1",
+   "size": 3210,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/new"
+  },
+  {
+   "dest": "vc7/include/set",
+   "sha256": "93d327d1e0c6a46e6d70e3ebfb5d6a3503b8f4b521247406ba9e49981f15f838",
+   "size": 6566,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/set"
+  },
+  {
+   "dest": "vc7/include/stdarg.h",
+   "sha256": "d72c8ddf96f0ffd41caf2a96a032af21fc8df6273283fda4c054a282cb6235dc",
+   "size": 6132,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/stdarg.h"
+  },
+  {
+   "dest": "vc7/include/stddef.h",
+   "sha256": "cf9f45a16c327bbfc8f969d986901b8ea920d7a453ebe3c0f5025340d9d656ae",
+   "size": 2698,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/stddef.h"
+  },
+  {
+   "dest": "vc7/include/stdexcept",
+   "sha256": "d98a3c65fb72eea7862f989d6740c04b21190c0ee5736a9411e1dce68845b090",
+   "size": 5105,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/stdexcept"
+  },
+  {
+   "dest": "vc7/include/stdio.h",
+   "sha256": "a98351be2d430c0c8f8e1052bc5c582b5b6842844c53f1266b5e093bf69845b0",
+   "size": 11976,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/stdio.h"
+  },
+  {
+   "dest": "vc7/include/stdlib.h",
+   "sha256": "54932368bd473eebf853db9e4d83507a6fbd6ccca530e1f7fb8223465417a176",
+   "size": 14185,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/stdlib.h"
+  },
+  {
+   "dest": "vc7/include/string.h",
+   "sha256": "838ab315ee7dd5fb1f4c2b0e9077d7ba3d52c3a10fb8ea55ba88e5c6bd2b0cb6",
+   "size": 7707,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/string.h"
+  },
+  {
+   "dest": "vc7/include/time.h",
+   "sha256": "727f559cd09a039bdd0461aa7391bc6e648fb4aa54ec642c9c01491ce49540d9",
+   "size": 5639,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/time.h"
+  },
+  {
+   "dest": "vc7/include/tvout.h",
+   "sha256": "0856762e9e868c79bfa6fe6a80c5bf860ea6c45110d327329cdf5a7eb9dd527e",
+   "size": 3917,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/tvout.h"
+  },
+  {
+   "dest": "vc7/include/use_ansi.h",
+   "sha256": "13a6093c7c935c7d9b85dfd35ba60db1bc9602f89ed1cb5797763de8a1d938f1",
+   "size": 933,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/use_ansi.h"
+  },
+  {
+   "dest": "vc7/include/utility",
+   "sha256": "a37324a138e9e23f8807176982cc219d31fe56e325d04663a5b90d65f8cf4e21",
+   "size": 4607,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/utility"
+  },
+  {
+   "dest": "vc7/include/vector",
+   "sha256": "d6bca84ff5762ff5f90f4a329b98701c61483c1dfa585208e33695901a06f6b1",
+   "size": 38049,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/vector"
+  },
+  {
+   "dest": "vc7/include/wchar.h",
+   "sha256": "4d165570938bcf92649266e29f8cd9a6572b607eba0d806c6a2bc691aa0b6a5a",
+   "size": 25711,
+   "source": "disc2",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/wchar.h"
+  },
+  {
+   "dest": "vc7/include/xmemory",
+   "sha256": "054a6248abd60ec3e131e6b0211583257dcd5e951f0d50b446385c7ed2008634",
+   "size": 6327,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/xmemory"
+  },
+  {
+   "dest": "vc7/include/xstddef",
+   "sha256": "d81ca04984e0f95c0be457fc30277d1ade2d6afe065d89f721b3530ab41cd7c3",
+   "size": 1764,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/xstddef"
+  },
+  {
+   "dest": "vc7/include/xstring",
+   "sha256": "4875e99547b0cb6bc2469ea42bcc6289c020aeed2413ba0ba0112a49c6ae6f88",
+   "size": 38973,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/xstring"
+  },
+  {
+   "dest": "vc7/include/xtree",
+   "sha256": "0c86d7e115a6d7eb162aeada8ff87aa0f38eaa1c79c2ad9995cc9dd3805cd821",
+   "size": 35573,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/xtree"
+  },
+  {
+   "dest": "vc7/include/xutility",
+   "sha256": "ba1cebeb62bdf9611dd7740b3545e2765f3793e3d198b54fad5e8313783262ca",
+   "size": 37007,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/xutility"
+  },
+  {
+   "dest": "vc7/include/yvals.h",
+   "sha256": "25f51059c45f3dc7707fad00c1d2c6bff81b5a3948f703effbebb86149500d35",
+   "size": 4722,
+   "source": "disc1",
+   "path": "Program Files/Microsoft Visual Studio .NET/Vc7/include/yvals.h"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/BaseTsd.h",
+   "sha256": "7048efb55beccbfdc8f65eec7c6da9e62fbeca2bc27bbb61594d2e1a35cc7df4",
+   "size": 6820,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "BaseTsd_h.95CE7C72_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/CdErr.h",
+   "sha256": "bf32afdc975ba03781b01dfc7b3a450787cc213257a3f4b7f53ec168ce07dd7c",
+   "size": 2242,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "CdErr_h.95CE7C75_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/CGuid.h",
+   "sha256": "8d50856479fe2fc4d14430b4b3c940487919d391a4312bf298835770e31f7a44",
+   "size": 3975,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "CGuid_h.95CE7C76_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/CommDlg.h",
+   "sha256": "d4817259ee3e94e5c45e866b55fc7bac48dde7ebc9059b9f71518ef528ee75e6",
+   "size": 73255,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "CommDlg_h.95CE7C7E_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Dde.h",
+   "sha256": "b6cb1b3bdb2e0538f4d632b23fe0cc14b783bf38ef89b19a80407ab98fd201fc",
+   "size": 5491,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Dde_h.95CE7C86_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Ddeml.h",
+   "sha256": "dc22392cdafe53ee531017b58d22075f1ca747b9124c36b88a7f031763fc2c94",
+   "size": 18232,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Ddeml_h.95CE7C88_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Dlgs.h",
+   "sha256": "5e71a1cf7217ff00f008eed8abef8b63d2308b1afeb4a6274ad55104a17a679d",
+   "size": 6136,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Dlgs_h.95CE7C8E_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/gl/GL.h",
+   "sha256": "e9f837193cbd807a60cb3022cb8f5d4329d2ac23eefbe8acd10bf330f751044a",
+   "size": 69083,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.11.cab",
+   "member": "GL_h.95CE6415_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/gl/GLAux.h",
+   "sha256": "83b4f23cc2674ed2b25b1fe3d4ead8745ea17ce144186e358680470b6bc8c25f",
+   "size": 12024,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.11.cab",
+   "member": "GLAux_h.95CE6415_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/gl/GLU.h",
+   "sha256": "af02601e8df6c95eb96099793a33e600dd316b0f411127291ae1fc3a1136fe90",
+   "size": 18282,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.11.cab",
+   "member": "GLU_h.95CE6415_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Guiddef.h",
+   "sha256": "acfa27cc0b8b66d475f26808a51698ccf6c37c526220b0b97271cf788afe3db2",
+   "size": 5079,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Guiddef_h.95CE7CA7_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Imm.h",
+   "sha256": "957f5c5bae35ab1789e752e65ab52705bd505d45028a04cb2463c1f3d475b4f3",
+   "size": 26346,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Imm_h.95CE7CB4_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/LZExpand.h",
+   "sha256": "9e14cae95284c4b5cf5272aab41d50b9dfe2d413041815e9aad86dc890a247a6",
+   "size": 1818,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "LZExpand_h.95CE7CE0_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Mcx.h",
+   "sha256": "a01f5381c7d65fc7a0b8945821d2f02ef953814a243e92237bad97b5239921a2",
+   "size": 24465,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Mcx_h.95CE7CF3_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/MMSystem.h",
+   "sha256": "71688839895a783fc4a6630c314050d7c66f06daf8037ed8bb96e4fe1dda9bc5",
+   "size": 175167,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "MMSystem_h.95CE7CF7_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/MsXml.h",
+   "sha256": "b174264f630921ec25088049cb3e03db81be24e8fc3230b4008b92d0abdf45e5",
+   "size": 459160,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "MsXml_h.9576362B_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Nb30.h",
+   "sha256": "06ea9809f8ab6c0fc57f89b225b70c1a254310e7c16b8c4ec9626fd718fc543b",
+   "size": 12842,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Nb30_h.95CE7D06_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/OAIdl.h",
+   "sha256": "e1c00448d5c85c3de34a8836b52ca28e01c776eafca14621b868e63baeb26e4d",
+   "size": 212712,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "OAIdl_h.95CE7D11_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/ObjBase.h",
+   "sha256": "0bde478e49bf1cf1c926283b56ea9ede0da377f570358d799377b52243c30387",
+   "size": 31179,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "ObjBase_h.95CE7D13_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/ObjIdl.h",
+   "sha256": "554e6ce1b92558b36012c8628b80babfa37b81b9d5ac82b6e50836f193610923",
+   "size": 428520,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "ObjIdl_h.95CE7D15_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Ole2.h",
+   "sha256": "1face3bf34a5cc01c05f642f748d2f7b79fb86c2df371c70eb3baaf1797beef8",
+   "size": 15919,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Ole2_h.95CE7D1A_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/OleAuto.h",
+   "sha256": "75f9d08192505cf21d6f73c271b74ce7088d8dbb5235cc15596546536408e5c3",
+   "size": 48141,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "OleAuto_h.95CE7D1D_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/OleIdl.h",
+   "sha256": "ccc73b65d19ab9da5e79fa35dfa726039edaf760b498d9d9f171d3166702c86a",
+   "size": 146593,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "OleIdl_h.95CE7D22_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/PopPack.h",
+   "sha256": "829888e896f9400c936d4afb89e070160e2a9626c9ecece624ed3f6943b7868b",
+   "size": 1018,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "PopPack_h.95CE7D28_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/PropIdl.h",
+   "sha256": "9ff57c0172112024f3387a9285ed83fa2c6e16baa7f8c9e83d505ef221cc3e07",
+   "size": 44698,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "PropIdl_h.95CE7D2C_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/PrSht.h",
+   "sha256": "72fa913ef3c665492a5675d06dab8b19fb214ab71d7ff823b78dc782744f4324",
+   "size": 35937,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "PrSht_h.95CE7D2D_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/PshPack1.h",
+   "sha256": "32f8fb0648db4564c4e0501b2a5b1f1bcac3f89aa808bbd873f327561d184dbb",
+   "size": 915,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "PshPack1_h.95CE7D2F_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/PshPack2.h",
+   "sha256": "8c3a4e2bab10c86d007c872ef0196599beb892f793cc3a92bd09866886e72e2c",
+   "size": 915,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "PshPack2_h.95CE7D30_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/PshPack4.h",
+   "sha256": "73595d2f1bdc362ddf962cc9721832960df69dd53221820053d83e9466ed239d",
+   "size": 915,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "PshPack4_h.95CE7D31_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/PshPack8.h",
+   "sha256": "d9195e68f7a9e618533d1dfb5917cde890aa1a4f47c32e3a7ed0dd7b542636ce",
+   "size": 915,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "PshPack8_h.95CE7D32_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Reason.h",
+   "sha256": "874bc02b59d176d65d50b8321ee2e110fbff9c971eb69407b39faf94dfb597a3",
+   "size": 3180,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Reason_h.D733D5C4_4455_43D4_92FC_0922107C62A0"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Rpc.h",
+   "sha256": "769cd17b4992b2297f5d662832ca1bf20f83f00245e68f0825d0d5857de8dffd",
+   "size": 3726,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Rpc_h.95CE7D3B_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/RpcAsync.h",
+   "sha256": "1e96c9922b958b730d5446a67f1810ca6667c8bdfe7909e278d6e77b9e67601f",
+   "size": 9001,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "RpcAsync_h.95CE7D3C_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/RpcDce.h",
+   "sha256": "c26da42997b779ea9cc0bf50658faec01f2627938aa0be73728160597b0489cb",
+   "size": 48638,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "RpcDce_h.95CE7D3D_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/RpcDceP.h",
+   "sha256": "d5c15b942e3e9419d234a304fe46c3bfd29847127b8dd957250d1849ed698cdd",
+   "size": 16546,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "RpcDceP_h.95CE7D3E_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/RpcNdr.h",
+   "sha256": "77976cfe96a86b3bf2797bff212a7a9ea308c518823623ed99a1e3a72ead5cc8",
+   "size": 75998,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "RpcNdr_h.95CE7D3F_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/RpcNsi.h",
+   "sha256": "0ea9d4546b524a4f220d108d10c041d820f2b6fbc56338cc72d460e04b7af2f5",
+   "size": 16403,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "RpcNsi_h.95CE7D40_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/RpcNsip.h",
+   "sha256": "081c562c4dcdce78cf4904b30e08baa10364c5c7dace5d8ee005344029fb8f0e",
+   "size": 1310,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "RpcNsip_h.95CE7D41_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/RpcNtErr.h",
+   "sha256": "777beed6d3eaaa39ee0f9b08fe64093649378ad8a69d93bcf844c1c213a2d28c",
+   "size": 1927,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "RpcNtErr_h.95CE7D42_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/ServProv.h",
+   "sha256": "851231e38b04a9beca72bb8d59741865b25664f6c644cca3d94f8f5251c6fae1",
+   "size": 7139,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "ServProv_h.95CE7D4F_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/ShellAPI.h",
+   "sha256": "5e4136f1f38ff3c8fc421758c4bbe3acb99e22185ad89e8f5fb41aaec45af789",
+   "size": 30832,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "ShellAPI_h.95CE7D52_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/StrAlign.h",
+   "sha256": "791fd09c603ea4636b275982f322a2a0459410ed3570514c5a8b9f69266936bf",
+   "size": 12253,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "StrAlign_h.2E32C8C7_B61C_44D6_83CF_99273E00053F"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Unknwn.h",
+   "sha256": "2d75cedc107962d5d1736d5abd8f2e48a8bbf7ddc3890dcac16adb4b3e5147b6",
+   "size": 16410,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Unknwn_h.95CE7D69_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/UrlMon.h",
+   "sha256": "852f76d326e495c2e50911811f19f609f3a9856068a9011be20aee20d3cc7bc1",
+   "size": 235662,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "UrlMon_h.95CE7D6B_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinBase.h",
+   "sha256": "05fdf5fc2ed3145ffd0175e31a0f7b00cc314128b7b302320832206f40c76772",
+   "size": 207701,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinBase_h.95CE7D77_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinCon.h",
+   "sha256": "eedd44db20190825063a6f92c7266d148186e3f85515e90720f09c18cbe498fd",
+   "size": 18211,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinCon_h.95CE7D78_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinCrypt.h",
+   "sha256": "630192c808346711a792bf258d23d691c81245114a4ed33344479f64ec7ab3ca",
+   "size": 648795,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinCrypt_h.95CE7D79_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinDef.h",
+   "sha256": "9ae342ce3716afc44178473eabb692b99807d4a083ec7275689438f557f291cf",
+   "size": 9001,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinDef_h.95CE7D7A_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/Windows.h",
+   "sha256": "c5ae461b1a3cbee914eec883ef55bd7dfd3eb287a8f178c0ed71eb3d1b1fb6f1",
+   "size": 6334,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Windows_h.95CE7D7B_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinEFS.h",
+   "sha256": "a7c556afe0d591bf0a76b6181869c517d37d7790026c376c8d85e78430cfa73a",
+   "size": 4967,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinEFS_h.95CE7D7D_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinError.h",
+   "sha256": "27b4a1fc6bb7719b09f098e0b5af8a6d52c1fc21f802f6e2e268694c715bc5c7",
+   "size": 595881,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinError_h.95CE7D7E_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinGDI.h",
+   "sha256": "8c4372f6a0e4afc5b87d776f9b8fe23882bd2653b2510bd9fcc50b990cdffd66",
+   "size": 182769,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinGDI_h.95CE7D80_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinIoCtl.h",
+   "sha256": "856f14ed28fa3d8d33806147e65163cee7c27d60d2ef55a8348fc36a2e0d4139",
+   "size": 123645,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinIoCtl_h.95CE7D82_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinNetWk.h",
+   "sha256": "5bbd10f956229ebffdb17adca2bbe04af89c633cc7b79055b00e7f742aec94db",
+   "size": 25799,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinNetWk_h.95CE7D83_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinNls.h",
+   "sha256": "e5ee5ab6814367250396df8d981bc046c0fa6e8af780e521c2ef4604d0117bb0",
+   "size": 58057,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinNls_h.95CE7D84_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinNT.h",
+   "sha256": "973647f7e3397f96e6b4f990c367b744e2fbffc4a6033cd4015ce48d5c56a746",
+   "size": 299907,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinNT_h.95CE7D86_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinPerf.h",
+   "sha256": "5e4cd5db368ed6206edeb88ea751fe93bceec0b74fb33c557ace62d576129a9f",
+   "size": 33038,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinPerf_h.95CE7D88_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinReg.h",
+   "sha256": "58f78e9e5b195e50ea2faf7ff5ae5b7b1a6a62fe1da4a1ea863b04da36506c61",
+   "size": 17860,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinReg_h.95CE7D89_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinSCard.h",
+   "sha256": "d2aca4b69f798781f265caec4a667cb564f67fff589fbb4ea7c9fd10ce82b3d7",
+   "size": 38912,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinSCard_h.95CE621C_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinSmCrd.h",
+   "sha256": "d76aa6f2bec67a388de742be4cfe37e97d8955694bc4d39fb9dfd15a77fcbff1",
+   "size": 13083,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinSmCrd_h.95CE621D_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinSock.h",
+   "sha256": "019ff0d4bd8f2d3551ea6a8631cafc463d2168b8d17ced8031622ec088140b92",
+   "size": 37653,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinSock_h.95CE7D8C_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinSpool.h",
+   "sha256": "80e915d166a8aacc4f5e2d723ee9c81ee39fc98b2f172e9a5675521a2d50fe34",
+   "size": 77212,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinSpool_h.95CE7D8E_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinSvc.h",
+   "sha256": "20a2cf9c5f245eebf0f6e2527dedb8be599bfe7b87c20aa52693b4b15d57d2e8",
+   "size": 26780,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinSvc_h.95CE7D8F_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinUser.h",
+   "sha256": "3981dc7c57f67be9df401a62112c3a29c5ac0d5c47c2d2467011069bbcfec235",
+   "size": 280124,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinUser_h.95CE7D91_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WinVer.h",
+   "sha256": "4286e90e1c5e0f053559c15fb636cb50627b937576233f518cd27e43df1edaab",
+   "size": 9721,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WinVer_h.95CE7D93_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/Include/WTypes.h",
+   "sha256": "23761d92a5aca9ae202f5153ed7aa0e7d2b2e8cefe29bba03c6eb31d89c6c97c",
+   "size": 30546,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "WTypes_h.95CE7DA1_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/lib/GlAux.Lib",
+   "sha256": "da077333b948e6f99c26d676cedb47aebf528a5d4b5ffb114b7ae686afff1482",
+   "size": 1188030,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "GlAux_Lib.95CE7DBF_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/lib/Kernel32.Lib",
+   "sha256": "96bacd10af0d93868e98a9d06ebe22b72f0b2be6b74dbb5abf2095caf3618c83",
+   "size": 182168,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Kernel32_Lib.1D186BB7_0E01_4EF7_A17F_6F37CEEEE822"
+  },
+  {
+   "dest": "vc7/PlatformSDK/lib/User32.Lib",
+   "sha256": "63be347f100033196dee223bf4772779ec4cfc6f05e081368f7649578130a40c",
+   "size": 139502,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "User32_Lib.95CE7DF8_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/lib/Gdi32.Lib",
+   "sha256": "b7bf99bcb8732411b37d2233cd6ea233820b811a2628cbe23ccd11abb8d29836",
+   "size": 80910,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Gdi32_Lib.EE6D822F_F27C_44A2_8A2F_707E2C2210B7"
+  },
+  {
+   "dest": "vc7/PlatformSDK/lib/AdvAPI32.Lib",
+   "sha256": "e720f1eb75e81c0219918fee6b7b7fc5dd2360e6e1c5da8d7440e4c82c0348ba",
+   "size": 150902,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "AdvAPI32_Lib.5671A8BE_0CD8_42AB_9777_E3AEA0E078CD"
+  },
+  {
+   "dest": "vc7/PlatformSDK/lib/OpenGL32.Lib",
+   "sha256": "93d8c80817393b403e648dbe701f89cb5142191324f22172943988582823e6ca",
+   "size": 76924,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "OpenGL32_Lib.99DAB6BA_5F5E_46F8_A4B6_7F516C5EA3C0"
+  },
+  {
+   "dest": "vc7/PlatformSDK/lib/GlU32.Lib",
+   "sha256": "ef000ebcd7879fc4f8e8e9972210f2113d6b4a80a3ab6ca206523e4fa0edbf8c",
+   "size": 12672,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "GlU32_Lib.95CE7DC0_A68D_11D2_A852_00C04FC2A854"
+  },
+  {
+   "dest": "vc7/PlatformSDK/lib/WSock32.Lib",
+   "sha256": "53d4e55d6635a9c9e0180b8cffadcb5400fc3b0aa41a808e63b6000a0ab980f3",
+   "size": 16844,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.1.cab",
+   "member": "WSock32_Lib.5123B871_7293_4B10_BAA3_C04B17DF46F8"
+  },
+  {
+   "dest": "vc7/bin/msvcr70.dll",
+   "sha256": "f68e4cdbc879423ea47d763a6768567f5f8063924f13a74239750c13fa8d168a",
+   "size": 344064,
+   "source": "disc1",
+   "path": "msvcr70.dll"
+  },
+  {
+   "dest": "vc7/bin/msvcp70.dll",
+   "sha256": "9255c60b194cf849f3db54587627e1b8fce10c88875748642b58ee8e27e22536",
+   "size": 487424,
+   "source": "disc1",
+   "path": "msvcp70.dll"
+  },
+  {
+   "dest": "vc7/PlatformSDK/lib/Uuid.Lib",
+   "sha256": "89bc37c453ac94b903478c4901ea41dacb61b3b6c7972dfcfd0e8309abfd526b",
+   "size": 1265694,
+   "source": "psdk",
+   "cab": "setup/WinBaseSDK-common.2.0.cab",
+   "member": "Uuid_Lib.95CE7DFA_A68D_11D2_A852_00C04FC2A854"
+  }
+ ]
+}
