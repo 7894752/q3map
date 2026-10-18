@@ -51,7 +51,7 @@ expected toolchain file hashes and the link-option notes are in [build/README.md
 
 This repository contains no executables. The program it rebuilds is the original `q3map.exe` from the Call of Duty (2003) mod
 tools; if you just need the tool, use the official mod tools. To verify the reconstruction, build it with
-`python builduild.py --fetch-toolchain --identical` and compare the printed SHA-256 with the original's
+`python build\build.py --fetch-toolchain --identical` and compare the printed SHA-256 with the original's
 `b7a3cbb2d003e241e97b87d824aa6c61b29cb9b42481641eaca6aed07bc6226a`.
 
 ## How the match is established
