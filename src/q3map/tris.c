@@ -159,10 +159,10 @@ extern triSoupAabbNode_t daabbtrees[];
 
 extern int numaabbtreenodes;
 
-static qboolean AabbPartitionItems( int itemCount, vec3_t *itemMins,
+static qboolean AabbSplitItems( int itemCount, vec3_t *itemMins,
 	vec3_t *itemMaxs, int *indices, int *frontCount, int *backStart );
 
-extern int PointsNearLine( float *pointA, float *pointB, float *lineEnd,
+extern int ColinearEdge( float *pointA, float *pointB, float *lineEnd,
 	float tolerance );
 
 
@@ -373,46 +373,46 @@ void VectorNormalizeFast( vec3_t v );
 // forward declarations
 //===========================================================================
 
-static void GetProjectionAxes( const vec3_t normal, int *axisU, int *axisV );
+static void ProjectionCoordsFromNormal( const vec3_t normal, int *axisU, int *axisV );
 
 static int TrisGetCellListCount( void );
 
-static void PrependTriSurfToCell( winding_t *winding,
+static void AddTriSurfToCell( winding_t *winding,
 	triSurfProps_t *props, int cell );
 
 void FilterTriSurfIntoTree( winding_t *winding, triSurfProps_t *props,
 	node_t *node );
 
-int TessSplitPointCompare( tessSplitPoint_t *splitA, tessSplitPoint_t *splitB );
+int SplitPointCompare( tessSplitPoint_t *splitA, tessSplitPoint_t *splitB );
 
-static void TrisInsertSplitPoints( winding_t **winding, const vec3_t normal, winding_t **originalWinding );
+static void FixWindingSelfTJunctions( winding_t **winding, const vec3_t normal, winding_t **originalWinding );
 
-void TrisRemoveDegenerateEdges( winding_t *winding,
+void RemoveDegenerateTris( winding_t *winding,
     winding_t *originalWinding );
 
-void TesselateRemoveVertex( winding_t *winding, winding_t *originalWinding,
+void RemoveWindingVertex( winding_t *winding, winding_t *originalWinding,
 	int previous, int vertex, int next, const vec3_t normal );
 
-static qboolean TriSideCheck( const double side0[3], const double side1[3],
+static qboolean PointOutsideTriSides( const double side0[3], const double side1[3],
 							 const double side2[3], float x, float y );
 
 static qboolean TrisCheckBothEdges( const double side0[3], const double side1[3],
 							   const double side2[3], float ax, float ay,
 							   float bx, float by );
 
-static qboolean TrisVerticesCoincident2D( int a, int axisX,
+static qboolean PointPairsCoincident2D( int a, int axisX,
 										winding_t *winding, int axisY,
 										int b, int c, int d );
 
-static void SetupTriSide( const vec3_t a, const vec3_t b, int axisX,
+static void ComputeEdgeLine2D( const vec3_t a, const vec3_t b, int axisX,
 						  int axisY, double side[3] );
 
-static double TrisLargestAngleCosine( const double side0[3],
+static double TriangleMinAngleCosine( const double side0[3],
 									 const double side1[3], const double side2[3] );
 
 static int TriSurfHashIndex( shaderInfo_t *shader, int lightStyle );
 
-void FreeTriSurfProps( void );
+void ClearTriSurfPropsHash( void );
 
 static __inline float TrisAffineValue( const vec4_t row, const vec3_t point );
 
@@ -432,10 +432,10 @@ static void DeriveTextureVectors( float *planeNormal, float *triPositions,
 
 static void SelectSurfaceTextureTriangle( const drawVert_t *verts, const vec3_t normal, int numVerts, float dist, vec3_t positions[3], vec2_t texCoords[3], vec2_t lightmapCoords[3] );
 
-static qboolean SurfacesCoplanar( winding_t *windingA, const vec3_t normalA,
+static qboolean WindingsCoplanar( winding_t *windingA, const vec3_t normalA,
 	const vec3_t normalB, float distA, winding_t *windingB, float distB );
 
-static qboolean TexVecsMatch( const vec4_t a, const vec4_t b, int scale );
+static qboolean TexVecsEquivalent( const vec4_t a, const vec4_t b, int scale );
 
 void TJunc_Unused0( void );
 
@@ -443,7 +443,7 @@ void TJunc_Unused1( void );
 
 static void TJunc_ResetCounters( void );
 
-static void TJunc_FreeHash( void );
+static void TJunc_ClearHash( void );
 
 static void TJunc_InsertPoint( vec3_t vertex, tjuncEdgeLine_t *edgeLine );
 
@@ -458,7 +458,7 @@ static tjuncEdgeLine_t *TJunc_FindEdge( int axis, vec3_t vertA,
 
 static int TJunc_ClassifyEdgeAxis( vec3_t vertA, vec3_t vertB );
 
-static void TJunc_AddEdge( vec3_t vertA, vec3_t vertB );
+static void TJunc_AddWindingEdge( vec3_t vertA, vec3_t vertB );
 
 static winding_t *TJunc_FixWinding( winding_t *w );
 
@@ -471,9 +471,9 @@ static qboolean TrisFindCoincidentRun( winding_t *w, int *startA,
 
 static int WindingIndexInArc( int index, int start, int end );
 
-winding_t *AllocWindingForArc( winding_t *src, int start, int end );
+winding_t *ExtractWindingArc( winding_t *src, int start, int end );
 
-static qboolean WindingEdgesIntersect( float *p1, float *p2, float *p3,
+static qboolean EdgesCross2D( float *p1, float *p2, float *p3,
 	float *p4, int axisU, int axisV );
 
 static qboolean WindingHasCrossingEdge( winding_t *w,
@@ -486,9 +486,9 @@ static qboolean TrisBridgeCutsWindingWedge( winding_t *w, const vec3_t point,
 qboolean TrisReconnectWindingArcs( winding_t *w, float *normal,
 	int startB, int startA, int endA, int endB, int *newA, int *newB );
 
-void TrisRepairTouchingWinding( winding_t *w, float *normal );
+void FixPinchedWinding( winding_t *w, float *normal );
 
-static qboolean CanRemoveVert( int vertIdx, winding_t *w, int anchorIdx,
+static qboolean CanSkipVertex( int vertIdx, winding_t *w, int anchorIdx,
 	int nextIdx, int axisU, int axisV );
 
 static qboolean WindingPointsNear( float *pointA, float *pointB,
@@ -503,7 +503,7 @@ static qboolean BoundsCoincideOnAxis( const triSurf_t *a,
 
 static int CheckWindingSeparation( winding_t *w, winding_t *testW, vec3_t normal );
 
-static int CheckWindingSeparationBoth( winding_t *w1, winding_t *w2, vec3_t normal );
+static int WindingsSeparated( winding_t *w1, winding_t *w2, vec3_t normal );
 
 int AddWindingWithoutOverlap_r( triSurf_t *surfs, int start, int count,
 							  int limit, winding_t *w, triSurfProps_t *props );
@@ -517,7 +517,7 @@ int MergeVisGroupCell( int cellIndex );
 
 void MergeVisGroupCells( void );
 
-static void RemoveDegenerateEdges( winding_t *w );
+static void RemoveEqualPoints( winding_t *w );
 
 static int TJunc_MarkIntersecting( const vec3_t mins, const vec3_t maxs,
 	int limit );
@@ -526,9 +526,9 @@ void TJunc_ProcessBounds( const vec3_t mins, const vec3_t maxs );
 
 void TJunc_FixAll( void );
 
-static void TrisGenerateVerticesFromWinding( triSurf_t *surface );
+static void GenerateWindingVerts( triSurf_t *surface );
 
-void TrisGenerateAllVertices( void );
+void GenerateAllTriSurfVerts( void );
 
 static int HashVertexGridCell( int x, int y, int z );
 
@@ -536,17 +536,17 @@ static int HashVertexPosition( const vec3_t position );
 
 void BuildTriangleVertexRemap( void );
 
-void ApplyMergeMap( void );
+void SnapMergedVerts( void );
 
-static void MergeTriangleVertexRepresentatives( int first, int second );
+static void MergeVertexClasses( int first, int second );
 
-void TrisSnapNearbyVertices( void );
+void MergeCloseWindingVerts( void );
 
 void RebuildTriangleWindings( void );
 
 static qboolean TrianglePairCanShareEdge( int triangleA, int triangleB );
 
-static int HashTriangleEdge( int vertexA, int vertexB );
+static int EdgeHashIndex( int vertexA, int vertexB );
 
 static int FindOrCreateTriangleEdge( int triangle, int startVertex,
 	int endVertex );
@@ -556,7 +556,7 @@ void BuildTriangleEdges( void );
 static qboolean TriangleCanSimplify( int firstTriangle,
 	int secondTriangle );
 
-static int FindOrCreateDrawVert( float *st, byte *color, int oldVertex,
+static int FindOrAddTriVert( float *st, byte *color, int oldVertex,
 	int destinationVertex, triGroupRecord_t *record, float *lightmap );
 
 void ApplyTriangleCollapse( int representativeVertex,
@@ -571,36 +571,36 @@ static void RetireTriangleEdge( int representativeVertex, int destinationVertex,
 static qboolean TryCollapseTriangleEdge( int representativeVertex,
 	int destinationVertex, int edgeIndex );
 
-static void SimplifyTriangleEdges( void );
+static void CollapseEdgesPass( void );
 
 void SimplifyTriangleMesh( void );
 
 void SmoothTriangleNormals( void );
 
-int CompareTriRecordHeaders( const void *a, const void *b );
+int TriRecordCompare( const void *a, const void *b );
 
 static int TriRecordsShareEdge( const triGroupRecord_t *lhs,
 	const triGroupRecord_t *rhs );
 
 static int CompareTrisByGroupId( const void *a, const void *b );
 
-int GroupAdjacentTris( triGroupRecord_t *records, int numTris );
+int LabelAdjacentTris( triGroupRecord_t *records, int numTris );
 
-int GroupTriSurfsIntoSubgroups( triGroupRecord_t *records,
+int MergeNearbyTriGroups( triGroupRecord_t *records,
 	int numTris, int groupCount );
 
-static int GroupAndMergeTriSubgroups( triGroupRecord_t *records, int numTris );
+static int ClusterTriRecords( triGroupRecord_t *records, int numTris );
 
 void FilterTriWindingIntoCells( winding_t *winding,
 	const vec4_t plane, triGroupRecord_t *record, node_t *node );
 
-static void CopyTriDrawVert( drawVert_t *destination,
+static void TriVertToDrawVert( drawVert_t *destination,
 	const triIntermediateVert_t *source );
 
-static qboolean CanMergeVerts( drawVert_t *compare, drawVert_t *current,
+static qboolean DrawVertsEquivalent( drawVert_t *compare, drawVert_t *current,
 	triGroupRecord_t *compareTri, triGroupRecord_t *currentTri, int lightStyle );
 
-static int EmitDrawVert( triSoup_t *soup, triShaderInfo_t *material,
+static int AddSoupVert( triSoup_t *soup, triShaderInfo_t *material,
 	int lightStyle, const triIntermediateVert_t *source );
 
 static qboolean MatchVertWithUVOffset( triShaderInfo_t *shader, drawVert_t *vertexA,
@@ -617,10 +617,10 @@ static void AdjustTriangleUVs_r( drawVert_t *verts, unsigned short *indices,
 	triShaderInfo_t *shader, int lightStyle, short *neighbors, int triangle,
 	byte *visited );
 
-static void StitchTriangleUVs( unsigned short *indices, int numIndices,
+static void AlignNeighborUVs( unsigned short *indices, int numIndices,
 	drawVert_t *verts, int numVerts, triShaderInfo_t *shader, int lightStyle );
 
-static void CenterTextureCoordinates( drawVert_t *verts, int numVerts );
+static void RecenterTexCoords( drawVert_t *verts, int numVerts );
 
 static int MergeDuplicateVerts( drawVert_t *verts, int numVerts,
 	unsigned short *indices, int numIndices, triGroupRecord_t *records,
@@ -629,36 +629,36 @@ static int MergeDuplicateVerts( drawVert_t *verts, int numVerts,
 static void MapDrawVertexIndices( unsigned short *remap, int numVerts,
 	unsigned short *indices, int numIndices );
 
-void ReorderDrawVertexIndices( drawVert_t *verts, int numVerts,
+void ReorderVertsByFirstUse( drawVert_t *verts, int numVerts,
 	unsigned short *indices, int numIndices );
 
 static int PrepareTriSoupVertices( drawVert_t *verts, int numVerts,
 	unsigned short *indices, int numIndices, triGroupRecord_t *records,
 	int lightStyle );
 
-static qboolean TriEdgesShareVerts( triSoup_t *soup, int earlierTriangle,
+static qboolean TrianglesShareEdge( triSoup_t *soup, int earlierTriangle,
 	int currentTriangle );
 
-int CountTriGroups( triSoup_t *soup, unsigned short *groupIds );
+int LabelSoupTriGroups( triSoup_t *soup, unsigned short *groupIds );
 
-qboolean GroupTriangles( triSoup_t *soup );
+qboolean SplitSoupByGroups( triSoup_t *soup );
 
 static qboolean SplitSoupOnAxis( triSoup_t *soup, int axis, float splitValue );
 
-void PartitionTriSoupRecursive( triSoup_t *soup, qboolean tryGroupSplit );
+void PartitionSoup_r( triSoup_t *soup, qboolean tryGroupSplit );
 
-void EmitTriangleSoup( triGroupRecord_t *records, int numTris, tree_t *tree );
+void EmitSoupFromRecords( triGroupRecord_t *records, int numTris, tree_t *tree );
 
-static void AabbBuildSubtree( triSoupAabbNode_t *parent,
+static void AabbAddChildNodes( triSoupAabbNode_t *parent,
 	vec3_t *itemMins, vec3_t *itemMaxs, int *indices,
 	int itemOffset, int itemCount );
 
-void AabbBuildTree_r( triSoupAabbNode_t *node, vec3_t *itemMins,
+void AabbSplitNode_r( triSoupAabbNode_t *node, vec3_t *itemMins,
 	vec3_t *itemMaxs, int *indices );
 
 static void BuildTriSoupAABBTree( triSoupAabbNode_t *root );
 
-void BuildTriangleSoups( tree_t *tree );
+void BuildSoupsAndAabbTrees( tree_t *tree );
 
 static void TriangulateUnsplittableWinding( triSurfProps_t *props,
     winding_t *winding, tree_t *tree, int cullGroupIndex );
@@ -671,7 +671,7 @@ static void Tris_FindPatchWindings( mapDrawSurface_t *surface, tree_t *tree );
 
 static void Tris_FindIndexedMeshWindings( mapDrawSurface_t *surface, tree_t *tree );
 
-static void Tris_FindBrushWindings( mapDrawSurface_t *surface, tree_t *tree );
+static void Tris_WindingFromBrushSide( mapDrawSurface_t *surface, tree_t *tree );
 
 static void Tris_FindWindings( entity_t *entity, tree_t *tree );
 
@@ -686,12 +686,12 @@ void EmitDrawSurfaces( entity_t *entity, tree_t *tree );
 
 /*
 =============
-GetProjectionAxes
+ProjectionCoordsFromNormal
 
 Dominant normal projection with the ordinary double result of fabs.
 =============
 */
-static void GetProjectionAxes( const vec3_t normal, int *axisU, int *axisV ) {
+static void ProjectionCoordsFromNormal( const vec3_t normal, int *axisU, int *axisV ) {
 	double x, y, z;
 
 	z = fabs( normal[2] );
@@ -737,10 +737,10 @@ static int TrisGetCellListCount( void ) {
 
 /*
 =============
-PrependTriSurfToCell
+AddTriSurfToCell
 =============
 */
-static void PrependTriSurfToCell( winding_t *winding,
+static void AddTriSurfToCell( winding_t *winding,
 	triSurfProps_t *props, int cell ) {
 	triSurf_t *surface;
 	if ( cell < 0 ) return;
@@ -765,7 +765,7 @@ void FilterTriSurfIntoTree( winding_t *winding, triSurfProps_t *props,
 	vec3_t normal;
 
 	if ( node->bspCell != -2 ) {
-		PrependTriSurfToCell( winding, props, node->bspCell );
+		AddTriSurfToCell( winding, props, node->bspCell );
 		return;
 	}
 	plane = &mapplanes[node->planenum];
@@ -801,13 +801,13 @@ back:
 
 /*
 =============
-TessSplitPointCompare
+SplitPointCompare
 
 Orders split candidates by winding edge and position along the edge.
 Equal and unordered positions deliberately return +1.
 =============
 */
-int TessSplitPointCompare( tessSplitPoint_t *splitA, tessSplitPoint_t *splitB ) {
+int SplitPointCompare( tessSplitPoint_t *splitA, tessSplitPoint_t *splitB ) {
 	if ( splitA->edgeIdx != splitB->edgeIdx ) {
 		return splitA->edgeIdx - splitB->edgeIdx;
 	}
@@ -820,19 +820,19 @@ int TessSplitPointCompare( tessSplitPoint_t *splitA, tessSplitPoint_t *splitB ) 
 
 /*
 =============
-TrisInsertSplitPoints
+FixWindingSelfTJunctions
 
 Insert existing winding vertices lying in the interior of projected edges.
 =============
 */
-static void TrisInsertSplitPoints( winding_t **winding, const vec3_t normal, winding_t **originalWinding ) {
+static void FixWindingSelfTJunctions( winding_t **winding, const vec3_t normal, winding_t **originalWinding ) {
     tessSplitPoint_t splits[16384];
     int axisU, axisV, vertex, previous, offset, scan, count, nextSplit, out;
     float edge[2], length, alongStart, acrossStart;
     float across, position;
     winding_t *expanded, *originalExpanded;
 
-    GetProjectionAxes( normal, &axisU, &axisV );
+    ProjectionCoordsFromNormal( normal, &axisU, &axisV );
     count = 0;
     previous = (*winding)->numpoints - 1;
     for ( vertex = 0; vertex < (*winding)->numpoints; vertex++ ) {
@@ -863,7 +863,7 @@ static void TrisInsertSplitPoints( winding_t **winding, const vec3_t normal, win
     }
     if ( !count ) return;
     numTriSplitPoints += count;
-    if ( count > 1 ) qsort( splits, count, sizeof( splits[0] ), TessSplitPointCompare );
+    if ( count > 1 ) qsort( splits, count, sizeof( splits[0] ), SplitPointCompare );
     expanded = AllocWinding( count + (*winding)->numpoints );
     expanded->numpoints = count + (*winding)->numpoints;
     originalExpanded = AllocWinding( count + (*originalWinding)->numpoints );
@@ -889,12 +889,12 @@ static void TrisInsertSplitPoints( winding_t **winding, const vec3_t normal, win
 
 /*
 =============
-TrisRemoveDegenerateEdges
+RemoveDegenerateTris
 
 Remove a two-edge spike, restarting after each compaction.
 =============
 */
-void TrisRemoveDegenerateEdges( winding_t *winding,
+void RemoveDegenerateTris( winding_t *winding,
     winding_t *originalWinding ) {
     int previous, beforePrevious, vertex;
 restart:
@@ -931,14 +931,14 @@ restart:
 
 /*
 =============
-TesselateRemoveVertex
+RemoveWindingVertex
 
 Remove the emitted ear from both current and original point arrays. The full
 caller supplies previous, next and normal even though this operation needs
 only the selected vertex and the two windings.
 =============
 */
-void TesselateRemoveVertex( winding_t *winding, winding_t *originalWinding,
+void RemoveWindingVertex( winding_t *winding, winding_t *originalWinding,
 	int previous, int vertex, int next, const vec3_t normal ) {
 	winding->numpoints--;
 	originalWinding->numpoints--;
@@ -953,10 +953,10 @@ void TesselateRemoveVertex( winding_t *winding, winding_t *originalWinding,
 
 /*
 =============
-TriSideCheck
+PointOutsideTriSides
 =============
 */
-static qboolean TriSideCheck( const double side0[3], const double side1[3],
+static qboolean PointOutsideTriSides( const double side0[3], const double side1[3],
 							 const double side2[3], float x, float y ) {
 	if ( y * side0[0] - x * side0[1] < side0[2] )
 		return qtrue;
@@ -976,18 +976,18 @@ TrisCheckBothEdges
 static qboolean TrisCheckBothEdges( const double side0[3], const double side1[3],
 							   const double side2[3], float ax, float ay,
 							   float bx, float by ) {
-	if ( !TriSideCheck( side0, side1, side2, ax, ay ) )
+	if ( !PointOutsideTriSides( side0, side1, side2, ax, ay ) )
 		return qfalse;
-	return TriSideCheck( side0, side1, side2, bx, by ) != qfalse;
+	return PointOutsideTriSides( side0, side1, side2, bx, by ) != qfalse;
 }
 
 
 /*
 =============
-TrisVerticesCoincident2D
+PointPairsCoincident2D
 =============
 */
-static qboolean TrisVerticesCoincident2D( int a, int axisX,
+static qboolean PointPairsCoincident2D( int a, int axisX,
 										winding_t *winding, int axisY,
 										int b, int c, int d ) {
 	return winding->p[a][axisX] == winding->p[b][axisX]
@@ -999,10 +999,10 @@ static qboolean TrisVerticesCoincident2D( int a, int axisX,
 
 /*
 =============
-SetupTriSide
+ComputeEdgeLine2D
 =============
 */
-static void SetupTriSide( const vec3_t a, const vec3_t b, int axisX,
+static void ComputeEdgeLine2D( const vec3_t a, const vec3_t b, int axisX,
 						  int axisY, double side[3] ) {
 	double deltaY;
 	side[0] = b[axisX] - a[axisX];
@@ -1014,10 +1014,10 @@ static void SetupTriSide( const vec3_t a, const vec3_t b, int axisX,
 
 /*
 =============
-TrisLargestAngleCosine
+TriangleMinAngleCosine
 =============
 */
-static double TrisLargestAngleCosine( const double side0[3],
+static double TriangleMinAngleCosine( const double side0[3],
 									 const double side1[3], const double side2[3] ) {
 	double lengthsSquared[3];
 	double numerator, denominator;
@@ -1054,12 +1054,12 @@ static int TriSurfHashIndex( shaderInfo_t *shader, int lightStyle ) {
 
 /*
 =============
-FreeTriSurfProps
+ClearTriSurfPropsHash
 
 Release the property cache after the triangle emission pipeline.
 =============
 */
-void FreeTriSurfProps( void ) {
+void ClearTriSurfPropsHash( void ) {
 	triSurfProps_t *props, *next;
 	int i;
 
@@ -1426,12 +1426,12 @@ static void SelectSurfaceTextureTriangle( const drawVert_t *verts, const vec3_t 
 
 /*
 =============
-SurfacesCoplanar
+WindingsCoplanar
 
 Test each winding against the other surface plane.
 =============
 */
-static qboolean SurfacesCoplanar( winding_t *windingA, const vec3_t normalA,
+static qboolean WindingsCoplanar( winding_t *windingA, const vec3_t normalA,
 	const vec3_t normalB, float distA, winding_t *windingB, float distB ) {
 	int i;
 	double normalDot;
@@ -1465,12 +1465,12 @@ static qboolean SurfacesCoplanar( winding_t *windingA, const vec3_t normalA,
 
 /*
 =============
-TexVecsMatch
+TexVecsEquivalent
 
 Compare affine coefficients in pixel units, retaining the one-sided test.
 =============
 */
-static qboolean TexVecsMatch( const vec4_t a, const vec4_t b, int scale ) {
+static qboolean TexVecsEquivalent( const vec4_t a, const vec4_t b, int scale ) {
 	int i;
 	for ( i = 0; i < 4; i++ ) {
 		if ( ( a[i] - b[i] ) * scale > 0.001f ) return qfalse;
@@ -1515,14 +1515,14 @@ static void TJunc_ResetCounters( void ) {
 
 /*
 =============
-TJunc_FreeHash
+TJunc_ClearHash
 
 Releases the per-bucket edge-line reference chains after a complete
 T-junction pass.  The edge lines and points themselves live in fixed arrays;
 only these eight-byte hash references are heap allocated.
 =============
 */
-static void TJunc_FreeHash( void ) {
+static void TJunc_ClearHash( void ) {
 	int axis;
 	int row;
 	int column;
@@ -1750,13 +1750,13 @@ static int TJunc_ClassifyEdgeAxis( vec3_t vertA, vec3_t vertB ) {
 
 /*
 =============
-TJunc_AddEdge
+TJunc_AddWindingEdge
 
 Adds one winding edge to the CoD triangle-surface T-junction database.
 Existing lines receive both endpoints; otherwise a new line is created.
 =============
 */
-static void TJunc_AddEdge( vec3_t vertA, vec3_t vertB ) {
+static void TJunc_AddWindingEdge( vec3_t vertA, vec3_t vertB ) {
 	int axis;
 	tjuncEdgeLine_t *edgeLine;
 
@@ -1862,13 +1862,13 @@ void FixTriSurfaceTJunctions( triSurf_t *surfaces, int count ) {
 		w = surfaces[surfaceIndex].winding;
 		numPoints = w->numpoints;
 		for ( vertex = 0; vertex < numPoints; vertex++ ) {
-			TJunc_AddEdge( w->p[vertex], w->p[( vertex + 1 ) % numPoints] );
+			TJunc_AddWindingEdge( w->p[vertex], w->p[( vertex + 1 ) % numPoints] );
 		}
 	}
 	for ( surfaceIndex = 0; surfaceIndex < count; surfaceIndex++ ) {
 		surfaces[surfaceIndex].winding = TJunc_FixWinding( surfaces[surfaceIndex].winding );
 	}
-	TJunc_FreeHash();
+	TJunc_ClearHash();
 }
 
 
@@ -1947,13 +1947,13 @@ static int WindingIndexInArc( int index, int start, int end ) {
 
 /*
 =============
-AllocWindingForArc
+ExtractWindingArc
 
 Allocates and copies the cyclic arc beginning at start and ending immediately
 before end.
 =============
 */
-winding_t *AllocWindingForArc( winding_t *src, int start, int end ) {
+winding_t *ExtractWindingArc( winding_t *src, int start, int end ) {
 	int i;
 	int count;
 	winding_t *dst;
@@ -1978,12 +1978,12 @@ winding_t *AllocWindingForArc( winding_t *src, int start, int end ) {
 
 /*
 =============
-WindingEdgesIntersect
+EdgesCross2D
 
 Tests two winding edges in the projection selected by axisU and axisV.
 =============
 */
-static qboolean WindingEdgesIntersect( float *p1, float *p2, float *p3,
+static qboolean EdgesCross2D( float *p1, float *p2, float *p3,
 	float *p4, int axisU, int axisV ) {
 	vec3_t edgeDir;
 	float sideP4;
@@ -2053,7 +2053,7 @@ static qboolean WindingHasCrossingEdge( winding_t *w,
 	int i, previous;
 	for ( i = 0, previous = w->numpoints - 1; i < w->numpoints;
 		previous = i, i++ ) {
-		if ( WindingEdgesIntersect( w->p[previous], w->p[i],
+		if ( EdgesCross2D( w->p[previous], w->p[i],
 			(float *)point, (float *)origin, axisU, axisV ) ) return qtrue;
 	}
 	return qfalse;
@@ -2135,15 +2135,15 @@ qboolean TrisReconnectWindingArcs( winding_t *w, float *normal,
 	if ( fabs( normal[2] ) > fabs( normal[axis] ) ) axis = 2;
 	axisV = (~axis) & 2;
 	axisU = (~axis) & 1;
-	a = AllocWindingForArc( w, endA, endB );
-	b = AllocWindingForArc( w, startB, startA );
+	a = ExtractWindingArc( w, endA, endB );
+	b = ExtractWindingArc( w, startB, startA );
 	found = qfalse;
 	bestDistance = FLT_MAX;
 	for ( i = 0; i < a->numpoints; i++ ) {
 		beforeA = (a->numpoints + i - 1) % a->numpoints;
 		pointA = a->p[i];
 		afterA = (i + 1) % a->numpoints;
-		if ( PointsNearLine( a->p[beforeA], pointA, a->p[afterA], 0.0625f ) ) continue;
+		if ( ColinearEdge( a->p[beforeA], pointA, a->p[afterA], 0.0625f ) ) continue;
 		for ( j = 0; j < b->numpoints; j++ ) {
 			pointB = b->p[j];
 			VectorSubtract( pointA, pointB, delta );
@@ -2151,7 +2151,7 @@ qboolean TrisReconnectWindingArcs( winding_t *w, float *normal,
 			if ( distance >= bestDistance ) continue;
 			beforeB = (b->numpoints + j - 1) % b->numpoints;
 			afterB = (j + 1) % b->numpoints;
-			if ( PointsNearLine( b->p[beforeB], pointB, b->p[afterB], 0.0625f )
+			if ( ColinearEdge( b->p[beforeB], pointB, b->p[afterB], 0.0625f )
 				|| WindingHasCrossingEdge( a, pointA, pointB, axisV, axisU )
 				|| WindingHasCrossingEdge( b, pointA, pointB, axisV, axisU ) ) continue;
 			if ( TrisBridgeCutsWindingWedge( a, pointB, pointA, normal, a->p[afterA] )
@@ -2184,10 +2184,10 @@ qboolean TrisReconnectWindingArcs( winding_t *w, float *normal,
 
 /*
 =============
-TrisRepairTouchingWinding
+FixPinchedWinding
 =============
 */
-void TrisRepairTouchingWinding( winding_t *w, float *normal ) {
+void FixPinchedWinding( winding_t *w, float *normal ) {
 	int startA, startB, endA, endB, newA, newB;
 	int pass, count, lengthA, lengthB, temporary;
 	if ( w->numpoints <= 8 ) return;
@@ -2214,14 +2214,14 @@ void TrisRepairTouchingWinding( winding_t *w, float *normal ) {
 
 /*
 =============
-CanRemoveVert
+CanSkipVertex
 
 Tests whether replacing a winding chain with the anchor-to-vertex shortcut
 would introduce a crossing edge.  The nextIdx argument is overwritten before
 it is used.
 =============
 */
-static qboolean CanRemoveVert( int vertIdx, winding_t *w, int anchorIdx,
+static qboolean CanSkipVertex( int vertIdx, winding_t *w, int anchorIdx,
 	int nextIdx, int axisU, int axisV ) {
 	int testIdx;
 
@@ -2229,7 +2229,7 @@ static qboolean CanRemoveVert( int vertIdx, winding_t *w, int anchorIdx,
 	testIdx = ( vertIdx + 2 ) % w->numpoints;
 
 	while ( testIdx != anchorIdx ) {
-		if ( WindingEdgesIntersect( w->p[anchorIdx], w->p[vertIdx],
+		if ( EdgesCross2D( w->p[anchorIdx], w->p[vertIdx],
 			w->p[nextIdx], w->p[testIdx], axisU, axisV ) ) {
 			return qfalse;
 		}
@@ -2259,7 +2259,7 @@ static qboolean WindingPointsNear( float *pointA, float *pointB,
 CollapseCollinearVerts
 
 Removes a middle winding point only when it is collinear/near and the shortcut
-passes CanRemoveVert.
+passes CanSkipVertex.
 =============
 */
 static void CollapseCollinearVerts( float *normal, winding_t *w ) {
@@ -2290,11 +2290,11 @@ static void CollapseCollinearVerts( float *normal, winding_t *w ) {
 		nextIdx = followingIdx % w->numpoints;
 		testIdx = endpointIdx % w->numpoints;
 
-		if (  ( PointsNearLine( anchor, w->p[nextIdx], w->p[testIdx],
+		if (  ( ColinearEdge( anchor, w->p[nextIdx], w->p[testIdx],
 				TRIS_MERGECONCAVE_COLLINEAR_VERTEX_EPSILON )
 				|| WindingPointsNear( w->p[nextIdx], w->p[testIdx],
 					TRIS_MERGECONCAVE_COLLINEAR_VERTEX_EPSILON ) )
-			&& CanRemoveVert( testIdx, w, anchorIdx, nextIdx, axisU, axisV )  ) {
+			&& CanSkipVertex( testIdx, w, anchorIdx, nextIdx, axisU, axisV )  ) {
 			if ( testIdx ) {
 				memmove( w->p[nextIdx], w->p[testIdx],
 					sizeof( vec3_t ) * ( w->numpoints - testIdx ) );
@@ -2442,10 +2442,10 @@ static int CheckWindingSeparation( winding_t *w, winding_t *testW, vec3_t normal
 
 /*
 =============
-CheckWindingSeparationBoth
+WindingsSeparated
 =============
 */
-static int CheckWindingSeparationBoth( winding_t *w1, winding_t *w2, vec3_t normal ) {
+static int WindingsSeparated( winding_t *w1, winding_t *w2, vec3_t normal ) {
 	if ( !CheckWindingSeparation( w1, w2, normal )
 		&& !CheckWindingSeparation( w2, w1, normal ) ) {
 		return 0;
@@ -2472,7 +2472,7 @@ int AddWindingWithoutOverlap_r( triSurf_t *surfs, int start, int count,
 
 	for ( i = start; i < limit; i++ ) {
 		surf = &surfs[i];
-		if ( !CheckWindingSeparationBoth( surf->winding, w, surf->props->plane )
+		if ( !WindingsSeparated( surf->winding, w, surf->props->plane )
 			&& surf->winding->numpoints > 0 ) {
 			currentVertex = 0;
 			e = 1;
@@ -2781,7 +2781,7 @@ int MergeVisGroupCell( int cellIndex ) {
 
 	triSurfCellHeads[cellIndex] = NULL;
 	for ( surfaceIndex = 0; surfaceIndex < surfaceCount; ++surfaceIndex ) {
-		TrisRepairTouchingWinding( surfaces[surfaceIndex]->winding, surfaces[surfaceIndex]->props->plane );
+		FixPinchedWinding( surfaces[surfaceIndex]->winding, surfaces[surfaceIndex]->props->plane );
 		CollapseCollinearVerts( surfaces[surfaceIndex]->props->plane, surfaces[surfaceIndex]->winding );
 		if ( surfaces[surfaceIndex]->winding->numpoints < 3 ) {
 			FreeWinding( surfaces[surfaceIndex]->winding );
@@ -2814,13 +2814,13 @@ void MergeVisGroupCells( void ) {
 
 /*
 =============
-RemoveDegenerateEdges
+RemoveEqualPoints
 
 Removes zero-length edges from a cyclic winding.  A duplicate final/first
 pair backs the cursor up so the newly adjacent predecessor is checked again.
 =============
 */
-static void RemoveDegenerateEdges( winding_t *w ) {
+static void RemoveEqualPoints( winding_t *w ) {
 	int i;
 	int next;
 
@@ -2955,7 +2955,7 @@ void TJunc_ProcessBounds( const vec3_t mins, const vec3_t maxs ) {
 			}
 			for ( vertex = 0; vertex < surface->winding->numpoints;
 				vertex++ ) {
-				TJunc_AddEdge( surface->winding->p[vertex],
+				TJunc_AddWindingEdge( surface->winding->p[vertex],
 					surface->winding->p[( vertex + 1 ) %
 						surface->winding->numpoints] );
 			}
@@ -2978,10 +2978,10 @@ void TJunc_ProcessBounds( const vec3_t mins, const vec3_t maxs ) {
 			}
 			fixed = TJunc_FixWinding( surface->winding );
 			surface->winding = fixed;
-			RemoveDegenerateEdges( fixed );
+			RemoveEqualPoints( fixed );
 		}
 	}
-	TJunc_FreeHash();
+	TJunc_ClearHash();
 }
 
 
@@ -3042,12 +3042,12 @@ void TJunc_FixAll( void ) {
 
 /*
 =============
-TrisGenerateVerticesFromWinding
+GenerateWindingVerts
 
 Generate the working vertices before coordinate snapping.
 =============
 */
-static void TrisGenerateVerticesFromWinding( triSurf_t *surface ) {
+static void GenerateWindingVerts( triSurf_t *surface ) {
 	triIntermediateVert_t *vertex;
 	int i;
 
@@ -3074,19 +3074,19 @@ static void TrisGenerateVerticesFromWinding( triSurf_t *surface ) {
 
 /*
 =============
-TrisGenerateAllVertices
+GenerateAllTriSurfVerts
 
 Visit every surface in the current cell/cull-group lists.
 =============
 */
-void TrisGenerateAllVertices( void ) {
+void GenerateAllTriSurfVerts( void ) {
 	triSurf_t *surface;
 	int i, cellCount;
 
 	cellCount = TrisGetCellListCount();
 	for ( i = 0; i < cellCount; i++ ) {
 		for ( surface = triSurfCellHeads[i]; surface; surface = surface->next ) {
-			TrisGenerateVerticesFromWinding( surface );
+			GenerateWindingVerts( surface );
 		}
 	}
 }
@@ -3162,13 +3162,13 @@ void BuildTriangleVertexRemap( void ) {
 
 /*
 =============
-ApplyMergeMap
+SnapMergedVerts
 
 Average each merged vertex cluster, snap its representative to the quarter
 unit grid, and use that position for every member of the cluster.
 =============
 */
-void ApplyMergeMap( void ) {
+void SnapMergedVerts( void ) {
 	vec3_t *positions;
 	int *counts;
 	int i;
@@ -3198,10 +3198,10 @@ void ApplyMergeMap( void ) {
 
 /*
 =============
-MergeTriangleVertexRepresentatives
+MergeVertexClasses
 =============
 */
-static void MergeTriangleVertexRepresentatives( int first, int second ) {
+static void MergeVertexClasses( int first, int second ) {
 	int i, temporary;
 	if ( second < first ) {
 		temporary = first;
@@ -3218,10 +3218,10 @@ static void MergeTriangleVertexRepresentatives( int first, int second ) {
 
 /*
 =============
-TrisSnapNearbyVertices
+MergeCloseWindingVerts
 =============
 */
-void TrisSnapNearbyVertices( void ) {
+void MergeCloseWindingVerts( void ) {
 	int cell, cellCount, firstVertex, i, j, axisU, axisV;
 	float dx, dy;
 	triSurf_t *surface;
@@ -3229,7 +3229,7 @@ void TrisSnapNearbyVertices( void ) {
 	firstVertex = numOriginalDrawVerts;
 	for ( cell = 0; cell < cellCount; cell++ ) {
 		for ( surface = triSurfCellHeads[cell]; surface; surface = surface->next ) {
-			GetProjectionAxes( surface->props->plane, &axisU, &axisV );
+			ProjectionCoordsFromNormal( surface->props->plane, &axisU, &axisV );
 			for ( i = 0; i < surface->winding->numpoints; i++ ) {
 				for ( j = i + 1; j < surface->winding->numpoints; j++ ) {
 					if ( triangleVertexRemap[firstVertex + i] ==
@@ -3239,7 +3239,7 @@ void TrisSnapNearbyVertices( void ) {
 					dy = triIntermediateVerts[firstVertex + i].xyz[axisV] -
 						triIntermediateVerts[firstVertex + j].xyz[axisV];
 					if ( dx * dx + dy * dy < 0.1250625f ) {
-						MergeTriangleVertexRepresentatives(
+						MergeVertexClasses(
 							triangleVertexRemap[firstVertex + i],
 							triangleVertexRemap[firstVertex + j] );
 					}
@@ -3406,13 +3406,13 @@ static qboolean TrianglePairCanShareEdge( int triangleA, int triangleB ) {
 
 /*
 =============
-HashTriangleEdge
+EdgeHashIndex
 
 Maps an unordered pair of triangle vertex indices into the 4096 edge-chain
 buckets used by the simplification pass.
 =============
 */
-static int HashTriangleEdge( int vertexA, int vertexB ) {
+static int EdgeHashIndex( int vertexA, int vertexB ) {
 	return ( ( vertexA + 1 ) * ( vertexB + 1 ) ) & 0xFFF;
 }
 
@@ -3431,7 +3431,7 @@ static int FindOrCreateTriangleEdge( int triangle, int startVertex,
 	int hash;
 	int edgeIndex;
 
-	hash = HashTriangleEdge( startVertex, endVertex );
+	hash = EdgeHashIndex( startVertex, endVertex );
 	for ( edgeIndex = triangleEdgeHash[hash]; edgeIndex >= 0;
 		edgeIndex = triangleEdges[edgeIndex].hashNext ) {
 
@@ -3572,7 +3572,7 @@ static qboolean CollectCollapseTriangles( int representativeVertex,
 			{
 				int other;
 				other = triangleEdges[selectedEdge].vertex[triangleVertexRemap[triangleEdges[selectedEdge].vertex[0]] == representativeVertex];
-				if ( !PointsNearLine( triIntermediateVerts[representativeVertex].xyz,
+				if ( !ColinearEdge( triIntermediateVerts[representativeVertex].xyz,
 						triIntermediateVerts[destinationVertex].xyz,
 						triIntermediateVerts[other].xyz,
 						0.0625f ) ) return qfalse;
@@ -3608,10 +3608,10 @@ static qboolean CollectCollapseTriangles( int representativeVertex,
 
 /*
 =============
-FindOrCreateDrawVert
+FindOrAddTriVert
 =============
 */
-static int FindOrCreateDrawVert( float *st, byte *color, int oldVertex,
+static int FindOrAddTriVert( float *st, byte *color, int oldVertex,
 	int destinationVertex, triGroupRecord_t *record, float *lightmap ) {
 	int hash, vertex, result;
 	float delta[2];
@@ -3692,7 +3692,7 @@ void ApplyTriangleCollapse( int representativeVertex,
 		color[3] = TRIS_MAX( 0, TRIS_MIN( 255, TRIS_COLLAPSE_COLOR(record->colorVecs[3], triIntermediateVerts[destinationVertex].xyz) ) );
 		for ( j = 0; j < 3; j++ ) {
 			if ( triangleVertexRemap[record->vertIdx[j]] == representativeVertex ) {
-				record->vertIdx[j] = FindOrCreateDrawVert( st, color,
+				record->vertIdx[j] = FindOrAddTriVert( st, color,
 					record->vertIdx[j], destinationVertex, record, lightmap );
 			} else if ( triangleVertexRemap[triangleEdges[record->edgeIdx[j]].vertex[0]] == representativeVertex ) {
 				int other = triangleEdges[record->edgeIdx[j]].vertex[1];
@@ -3841,12 +3841,12 @@ static qboolean TryCollapseTriangleEdge( int representativeVertex,
 
 /*
 =============
-SimplifyTriangleEdges
+CollapseEdgesPass
 
 One pass over the edge array; failure in one direction tries the reverse.
 =============
 */
-static void SimplifyTriangleEdges( void ) {
+static void CollapseEdgesPass( void ) {
 	int edgeIndex;
 	triangleEdge_t *edge;
 
@@ -3879,8 +3879,8 @@ void SimplifyTriangleMesh( void ) {
 	BuildTriangleVertexRemap();
 	BuildTriangleEdges();
 	numSimplifiedTriangles = 0;
-	SimplifyTriangleEdges();
-	SimplifyTriangleEdges();
+	CollapseEdgesPass();
+	CollapseEdgesPass();
 	if ( !entity_num ) {
 		printf( "%i tris simplified away (%.1f%%)\n",
 			numSimplifiedTriangles,
@@ -3930,12 +3930,12 @@ void SmoothTriangleNormals( void ) {
 
 /*
 =============
-CompareTriRecordHeaders
+TriRecordCompare
 
 Orders triangle records by removal status and their batching header fields.
 =============
 */
-int CompareTriRecordHeaders( const void *a, const void *b ) {
+int TriRecordCompare( const void *a, const void *b ) {
 	const triGroupRecord_t *triA = a;
 	const triGroupRecord_t *triB = b;
 	int difference;
@@ -4016,13 +4016,13 @@ static int CompareTrisByGroupId( const void *a, const void *b ) {
 
 /*
 =============
-GroupAdjacentTris
+LabelAdjacentTris
 
 Assigns connected-component identifiers to triangles sharing cached edges,
 merges components bridged by a later triangle, and groups the result by ID.
 =============
 */
-int GroupAdjacentTris( triGroupRecord_t *records, int numTris ) {
+int LabelAdjacentTris( triGroupRecord_t *records, int numTris ) {
 	int i;
 	int j;
 	int k;
@@ -4071,12 +4071,12 @@ int GroupAdjacentTris( triGroupRecord_t *records, int numTris ) {
 
 /*
 =============
-GroupTriSurfsIntoSubgroups
+MergeNearbyTriGroups
 
 Rebuild bounds after each merge, keeping records sorted by group.
 =============
 */
-int GroupTriSurfsIntoSubgroups( triGroupRecord_t *records,
+int MergeNearbyTriGroups( triGroupRecord_t *records,
 	int numTris, int groupCount ) {
 	triSubgroup_t groups[65536];
 	vec3_t mins, maxs;
@@ -4137,15 +4137,15 @@ rebuildSubgroups:
 
 /*
 =============
-GroupAndMergeTriSubgroups
+ClusterTriRecords
 =============
 */
-static int GroupAndMergeTriSubgroups( triGroupRecord_t *records, int numTris ) {
+static int ClusterTriRecords( triGroupRecord_t *records, int numTris ) {
 	int groupCount;
 
-	groupCount = GroupAdjacentTris( records, numTris );
+	groupCount = LabelAdjacentTris( records, numTris );
 	if ( groupCount > 1 ) {
-		return GroupTriSurfsIntoSubgroups( records, numTris, groupCount );
+		return MergeNearbyTriGroups( records, numTris, groupCount );
 	}
 	return groupCount;
 }
@@ -4195,12 +4195,12 @@ void FilterTriWindingIntoCells( winding_t *winding,
 
 /*
 =============
-CopyTriDrawVert
+TriVertToDrawVert
 
 Convert the working vertex to the complete BSP drawing vertex.
 =============
 */
-static void CopyTriDrawVert( drawVert_t *destination,
+static void TriVertToDrawVert( drawVert_t *destination,
 	const triIntermediateVert_t *source ) {
 	VectorCopy( source->xyz, destination->xyz );
 	VectorCopy( source->smoothNormal, destination->normal );
@@ -4217,10 +4217,10 @@ static void CopyTriDrawVert( drawVert_t *destination,
 
 /*
 =============
-CanMergeVerts
+DrawVertsEquivalent
 =============
 */
-static qboolean CanMergeVerts( drawVert_t *compare, drawVert_t *current,
+static qboolean DrawVertsEquivalent( drawVert_t *compare, drawVert_t *current,
 	triGroupRecord_t *compareTri, triGroupRecord_t *currentTri, int lightStyle ) {
 	float delta[2];
 
@@ -4260,14 +4260,14 @@ static qboolean CanMergeVerts( drawVert_t *compare, drawVert_t *current,
 
 /*
 =============
-EmitDrawVert
+AddSoupVert
 =============
 */
-static int EmitDrawVert( triSoup_t *soup, triShaderInfo_t *material,
+static int AddSoupVert( triSoup_t *soup, triShaderInfo_t *material,
 	int lightStyle, const triIntermediateVert_t *source ) {
 	drawVert_t vertex;
 
-	CopyTriDrawVert( &vertex, source );
+	TriVertToDrawVert( &vertex, source );
 	if ( numDrawVerts == 524288 ) {
 		Error( "MAX_MAP_DRAW_VERTS" );
 	}
@@ -4418,10 +4418,10 @@ static void AdjustTriangleUVs_r( drawVert_t *verts, unsigned short *indices,
 
 /*
 =============
-StitchTriangleUVs
+AlignNeighborUVs
 =============
 */
-static void StitchTriangleUVs( unsigned short *indices, int numIndices,
+static void AlignNeighborUVs( unsigned short *indices, int numIndices,
 	drawVert_t *verts, int numVerts, triShaderInfo_t *shader, int lightStyle ) {
 	short *neighbors;
 	byte *visited;
@@ -4442,10 +4442,10 @@ static void StitchTriangleUVs( unsigned short *indices, int numIndices,
 
 /*
 =============
-CenterTextureCoordinates
+RecenterTexCoords
 =============
 */
-static void CenterTextureCoordinates( drawVert_t *verts, int numVerts ) {
+static void RecenterTexCoords( drawVert_t *verts, int numVerts ) {
 	vec2_t mins, maxs;
 	int i;
 
@@ -4491,7 +4491,7 @@ static int MergeDuplicateVerts( drawVert_t *verts, int numVerts,
 		current = verts + i;
 		do {
 			for ( j = 0; j < i; j++ ) {
-				if ( !CanMergeVerts( &verts[j], current,
+				if ( !DrawVertsEquivalent( &verts[j], current,
 					&records[vertexTriangle[j]], &records[vertexTriangle[i]],
 					lightStyle ) ) continue;
 				numVerts--;
@@ -4540,10 +4540,10 @@ static void MapDrawVertexIndices( unsigned short *remap, int numVerts,
 
 /*
 =============
-ReorderDrawVertexIndices
+ReorderVertsByFirstUse
 =============
 */
-void ReorderDrawVertexIndices( drawVert_t *verts, int numVerts,
+void ReorderVertsByFirstUse( drawVert_t *verts, int numVerts,
 	unsigned short *indices, int numIndices ) {
 	unsigned short *remap;
 	drawVert_t *oldVerts;
@@ -4571,8 +4571,8 @@ static int PrepareTriSoupVertices( drawVert_t *verts, int numVerts,
 	int lightStyle ) {
 	triShaderInfo_t *shader = records->shaderInfo;
 	if ( !shader->clampTexture && !shader->flap ) {
-		StitchTriangleUVs( indices, numIndices, verts, numVerts, shader, lightStyle );
-		CenterTextureCoordinates( verts, numVerts );
+		AlignNeighborUVs( indices, numIndices, verts, numVerts, shader, lightStyle );
+		RecenterTexCoords( verts, numVerts );
 	}
 	return MergeDuplicateVerts( verts, numVerts, indices, numIndices, records, lightStyle );
 }
@@ -4580,12 +4580,12 @@ static int PrepareTriSoupVertices( drawVert_t *verts, int numVerts,
 
 /*
 =============
-TriEdgesShareVerts
+TrianglesShareEdge
 
 Compare oppositely directed geometric edges of two indexed triangles.
 =============
 */
-static qboolean TriEdgesShareVerts( triSoup_t *soup, int earlierTriangle,
+static qboolean TrianglesShareEdge( triSoup_t *soup, int earlierTriangle,
 	int currentTriangle ) {
 	unsigned short *indices = &drawIndexes[soup->firstIndex];
 	drawVert_t *verts = &triangleSoupData[soup->firstVert];
@@ -4615,12 +4615,12 @@ static qboolean TriEdgesShareVerts( triSoup_t *soup, int earlierTriangle,
 
 /*
 =============
-CountTriGroups
+LabelSoupTriGroups
 
 Label the connected components, merging labels when an edge bridges them.
 =============
 */
-int CountTriGroups( triSoup_t *soup, unsigned short *groupIds ) {
+int LabelSoupTriGroups( triSoup_t *soup, unsigned short *groupIds ) {
 	int current, previous, k;
 	int nextGroupId = 1;
 	int numGroups = 0;
@@ -4629,7 +4629,7 @@ int CountTriGroups( triSoup_t *soup, unsigned short *groupIds ) {
 		groupIds[current] = 0;
 		for ( previous = 0; previous < current; previous++ ) {
 			if ( groupIds[current] != groupIds[previous]
-				&& TriEdgesShareVerts( soup, previous * 3, current * 3 ) ) {
+				&& TrianglesShareEdge( soup, previous * 3, current * 3 ) ) {
 				if ( groupIds[current] ) {
 					for ( k = 0; k < current; k++ ) {
 						if ( groupIds[k] == groupIds[current] )
@@ -4651,12 +4651,12 @@ int CountTriGroups( triSoup_t *soup, unsigned short *groupIds ) {
 
 /*
 =============
-GroupTriangles
+SplitSoupByGroups
 
 Split a soup into its connected triangle groups.
 =============
 */
-qboolean GroupTriangles( triSoup_t *soup ) {
+qboolean SplitSoupByGroups( triSoup_t *soup ) {
 	unsigned short *groupIds, *savedIndices;
 	drawVert_t *savedVerts;
 	short *remap;
@@ -4664,7 +4664,7 @@ qboolean GroupTriangles( triSoup_t *soup ) {
 	int numGroups, indexCount, i, corner;
 
 	groupIds = malloc( sizeof( *groupIds ) * ( soup->numIndices / 3 ) );
-	numGroups = CountTriGroups( soup, groupIds );
+	numGroups = LabelSoupTriGroups( soup, groupIds );
 	if ( numGroups == 1 ) {
 		free( groupIds );
 		return qfalse;
@@ -4702,7 +4702,7 @@ qboolean GroupTriangles( triSoup_t *soup ) {
 				}
 			}
 		}
-		PartitionTriSoupRecursive( groupSoup, qfalse );
+		PartitionSoup_r( groupSoup, qfalse );
 	}
 	free( savedIndices );
 	free( savedVerts );
@@ -4808,7 +4808,7 @@ static qboolean SplitSoupOnAxis( triSoup_t *soup, int axis, float splitValue ) {
 			sizeof(drawVert_t) * soup->numVerts );
 		memcpy( &drawIndexes[soup->firstIndex], indexBuffers[0],
 			sizeof(unsigned short) * soup->numIndices );
-		PartitionTriSoupRecursive( soup, qfalse );
+		PartitionSoup_r( soup, qfalse );
 		otherSoup->numVerts = vertexCounts[1];
 		otherSoup->firstVert = numDrawVerts;
 		otherSoup->numIndices = indexCounts[1];
@@ -4817,7 +4817,7 @@ static qboolean SplitSoupOnAxis( triSoup_t *soup, int axis, float splitValue ) {
 			sizeof(drawVert_t) * otherSoup->numVerts );
 		memcpy( &drawIndexes[otherSoup->firstIndex], indexBuffers[1],
 			sizeof(unsigned short) * otherSoup->numIndices );
-		PartitionTriSoupRecursive( otherSoup, qfalse );
+		PartitionSoup_r( otherSoup, qfalse );
 	}
 	free( aboveFlags );
 	free( belowFlags );
@@ -4831,22 +4831,22 @@ static qboolean SplitSoupOnAxis( triSoup_t *soup, int axis, float splitValue ) {
 
 /*
 =============
-PartitionTriSoupRecursive
+PartitionSoup_r
 =============
 */
-void PartitionTriSoupRecursive( triSoup_t *soup, qboolean tryGroupSplit ) {
+void PartitionSoup_r( triSoup_t *soup, qboolean tryGroupSplit ) {
 	vec3_t mins, maxs, extents;
 	int i, axis, second, third;
 	int result;
 
 	if ( soup->numVerts <= MAX_TRI_SOUP_VERTS && soup->numIndices <= MAX_TRI_SOUP_INDICES ) {
-		ReorderDrawVertexIndices( &triangleSoupData[soup->firstVert],
+		ReorderVertsByFirstUse( &triangleSoupData[soup->firstVert],
 			soup->numVerts, &drawIndexes[soup->firstIndex], soup->numIndices );
 		numDrawIndexes += soup->numIndices;
 		numDrawVerts = soup->firstVert + soup->numVerts;
 		return;
 	}
-	if ( tryGroupSplit && GroupTriangles( soup ) ) return;
+	if ( tryGroupSplit && SplitSoupByGroups( soup ) ) return;
 	ClearBounds( mins, maxs );
 	for ( i = 0; i < soup->numVerts; i++ ) {
 		AddPointToBounds( triangleSoupData[soup->firstVert + i].xyz, mins, maxs );
@@ -4876,10 +4876,10 @@ void PartitionTriSoupRecursive( triSoup_t *soup, qboolean tryGroupSplit ) {
 
 /*
 =============
-EmitTriangleSoup
+EmitSoupFromRecords
 =============
 */
-void EmitTriangleSoup( triGroupRecord_t *records, int numTris, tree_t *tree ) {
+void EmitSoupFromRecords( triGroupRecord_t *records, int numTris, tree_t *tree ) {
 	triSoup_t *soup;
 	triGroupRecord_t *record;
 	winding_t *w;
@@ -4902,13 +4902,13 @@ void EmitTriangleSoup( triGroupRecord_t *records, int numTris, tree_t *tree ) {
 			record = &records[end];
 			if ( record->groupId != records[first].groupId ) break;
 			drawIndexes[soup->firstIndex + soup->numIndices++] =
-				EmitDrawVert( soup, record->shaderInfo, record->lightStyle,
+				AddSoupVert( soup, record->shaderInfo, record->lightStyle,
 					&triIntermediateVerts[record->vertIdx[0]] );
 			drawIndexes[soup->firstIndex + soup->numIndices++] =
-				EmitDrawVert( soup, record->shaderInfo, record->lightStyle,
+				AddSoupVert( soup, record->shaderInfo, record->lightStyle,
 					&triIntermediateVerts[record->vertIdx[1]] );
 			drawIndexes[soup->firstIndex + soup->numIndices++] =
-				EmitDrawVert( soup, record->shaderInfo, record->lightStyle,
+				AddSoupVert( soup, record->shaderInfo, record->lightStyle,
 					&triIntermediateVerts[record->vertIdx[2]] );
 			if ( !entity_num && records[first].cullGroupIdx >= 0 ) {
 				w = AllocWinding( 3 );
@@ -4928,7 +4928,7 @@ void EmitTriangleSoup( triGroupRecord_t *records, int numTris, tree_t *tree ) {
 		}
 		soup->numVerts = PrepareTriSoupVertices( &triangleSoupData[soup->firstVert], soup->numVerts,
 			&drawIndexes[soup->firstIndex], soup->numIndices, &records[first], records[first].lightStyle );
-		PartitionTriSoupRecursive( soup, qtrue );
+		PartitionSoup_r( soup, qtrue );
 	}
 }
 
@@ -4943,12 +4943,12 @@ float *g_aabbSortMin, *g_aabbSortMax, *g_aabbSortEqual;
 
 /*
 =============
-AabbFloatCompare
+CompareFloats
 
 Floating split-event ordering, including unordered values returning zero.
 =============
 */
-int AabbFloatCompare( const void *a, const void *b ) {
+int CompareFloats( const void *a, const void *b ) {
 	float difference;
 
 	difference = *(const float *)a - *(const float *)b;
@@ -4963,10 +4963,10 @@ int AabbFloatCompare( const void *a, const void *b ) {
 
 /*
 =============
-AabbFindBestSplitPlane
+AabbSelectSplitPlane
 =============
 */
-static qboolean AabbFindBestSplitPlane( vec3_t *itemMins, vec3_t *itemMaxs,
+static qboolean AabbSelectSplitPlane( vec3_t *itemMins, vec3_t *itemMaxs,
 	int *indices, int itemCount, int *splitAxis, float *splitPosition ) {
 	vec3_t maxBounds;
 	vec3_t minBounds;
@@ -5000,9 +5000,9 @@ static qboolean AabbFindBestSplitPlane( vec3_t *itemMins, vec3_t *itemMaxs,
 				g_aabbSortMax[intervalCount++] = itemMaxs[indices[i]][axis];
 			}
 		}
-		qsort( g_aabbSortMin, intervalCount, sizeof(float), AabbFloatCompare );
-		qsort( g_aabbSortMax, intervalCount, sizeof(float), AabbFloatCompare );
-		qsort( g_aabbSortEqual, planeCount, sizeof(float), AabbFloatCompare );
+		qsort( g_aabbSortMin, intervalCount, sizeof(float), CompareFloats );
+		qsort( g_aabbSortMax, intervalCount, sizeof(float), CompareFloats );
+		qsort( g_aabbSortEqual, planeCount, sizeof(float), CompareFloats );
 		front = 0;
 		back = itemCount;
 		crossing = 0;
@@ -5063,12 +5063,12 @@ static qboolean AabbFindBestSplitPlane( vec3_t *itemMins, vec3_t *itemMaxs,
 
 /*
 =============
-AabbBoundsVolumeGrowth
+AabbEnlargement
 
 Volume added when an item's bounds are included in a partition.
 =============
 */
-static float AabbBoundsVolumeGrowth( const vec3_t mins, const vec3_t maxs,
+static float AabbEnlargement( const vec3_t mins, const vec3_t maxs,
 	const vec3_t itemMins, const vec3_t itemMaxs ) {
 	vec3_t newMins;
 	vec3_t newMaxs;
@@ -5086,17 +5086,17 @@ static float AabbBoundsVolumeGrowth( const vec3_t mins, const vec3_t maxs,
 
 /*
 =============
-AabbPartitionItems
+AabbSplitItems
 =============
 */
-static qboolean AabbPartitionItems( int itemCount, vec3_t *itemMins,
+static qboolean AabbSplitItems( int itemCount, vec3_t *itemMins,
 	vec3_t *itemMaxs, int *indices, int *frontCount, int *backStart ) {
 	int front, back, scan, item, frontItem, temp;
 	vec3_t childBounds[2][2];
 	int splitAxis;
 	float splitPosition;
 
-	if ( !AabbFindBestSplitPlane( itemMins, itemMaxs, indices, itemCount,
+	if ( !AabbSelectSplitPlane( itemMins, itemMaxs, indices, itemCount,
 		&splitAxis, &splitPosition ) ) return qfalse;
 	ClearBounds( childBounds[0][0], childBounds[0][1] );
 	ClearBounds( childBounds[1][0], childBounds[1][1] );
@@ -5140,11 +5140,11 @@ static qboolean AabbPartitionItems( int itemCount, vec3_t *itemMins,
 
 	if ( front <= back && ( front < 4 || back - front + 1 < 4 || itemCount - back - 1 < 4 ) ) {
 		while ( front <= back ) {
-			while ( front <= back && AabbBoundsVolumeGrowth( childBounds[0][0], childBounds[0][1], itemMins[indices[front]], itemMaxs[indices[front]] ) <= AabbBoundsVolumeGrowth( childBounds[1][0], childBounds[1][1], itemMins[indices[front]], itemMaxs[indices[front]] ) ) {
+			while ( front <= back && AabbEnlargement( childBounds[0][0], childBounds[0][1], itemMins[indices[front]], itemMaxs[indices[front]] ) <= AabbEnlargement( childBounds[1][0], childBounds[1][1], itemMins[indices[front]], itemMaxs[indices[front]] ) ) {
 				ExpandBounds( itemMins[indices[front]], itemMaxs[indices[front]], childBounds[0][0], childBounds[0][1] );
 				front++;
 			}
-			while ( front <= back && AabbBoundsVolumeGrowth( childBounds[1][0], childBounds[1][1], itemMins[indices[back]], itemMaxs[indices[back]] ) <= AabbBoundsVolumeGrowth( childBounds[0][0], childBounds[0][1], itemMins[indices[back]], itemMaxs[indices[back]] ) ) {
+			while ( front <= back && AabbEnlargement( childBounds[1][0], childBounds[1][1], itemMins[indices[back]], itemMaxs[indices[back]] ) <= AabbEnlargement( childBounds[0][0], childBounds[0][1], itemMins[indices[back]], itemMaxs[indices[back]] ) ) {
 				ExpandBounds( itemMins[indices[back]], itemMaxs[indices[back]], childBounds[1][0], childBounds[1][1] );
 				back--;
 			}
@@ -5168,14 +5168,14 @@ static qboolean AabbPartitionItems( int itemCount, vec3_t *itemMins,
 
 /*
 =============
-AabbBuildSubtree
+AabbAddChildNodes
 
 Appends the front, optional middle, and back child nodes for one tri-soup
 range.  Unsplittable ranges and ranges of at most sixteen soups become a
 single leaf.
 =============
 */
-static void AabbBuildSubtree( triSoupAabbNode_t *parent,
+static void AabbAddChildNodes( triSoupAabbNode_t *parent,
 	vec3_t *itemMins, vec3_t *itemMaxs, int *indices,
 	int itemOffset, int itemCount ) {
 	int frontCount;
@@ -5183,7 +5183,7 @@ static void AabbBuildSubtree( triSoupAabbNode_t *parent,
 	triSoupAabbNode_t *node;
 
 	if ( itemCount > TRISOUP_AABB_LEAF_LIMIT
-		&& AabbPartitionItems( itemCount, itemMins, itemMaxs,
+		&& AabbSplitItems( itemCount, itemMins, itemMaxs,
 			indices + itemOffset, &frontCount, &backStart ) ) {
 		node = &daabbtrees[numaabbtreenodes++];
 		node->firstSurface = parent->firstSurface + itemOffset;
@@ -5209,13 +5209,13 @@ static void AabbBuildSubtree( triSoupAabbNode_t *parent,
 
 /*
 =============
-AabbBuildTree_r
+AabbSplitNode_r
 
 Builds the tri-soup AABB tree recursively.  The firstSurface values also provide
 relative offsets into the reordered index array for recursive descendants.
 =============
 */
-void AabbBuildTree_r( triSoupAabbNode_t *node, vec3_t *itemMins,
+void AabbSplitNode_r( triSoupAabbNode_t *node, vec3_t *itemMins,
 	vec3_t *itemMaxs, int *indices ) {
 	int i;
 	triSoupAabbNode_t *children;
@@ -5228,7 +5228,7 @@ void AabbBuildTree_r( triSoupAabbNode_t *node, vec3_t *itemMins,
 		if ( node->surfaceCount <= TRISOUP_AABB_LEAF_LIMIT ) {
 			return;
 		}
-		if ( !AabbPartitionItems( node->surfaceCount, itemMins, itemMaxs,
+		if ( !AabbSplitItems( node->surfaceCount, itemMins, itemMaxs,
 			indices, &frontCount, &backStart ) ) {
 			return;
 		}
@@ -5236,18 +5236,18 @@ void AabbBuildTree_r( triSoupAabbNode_t *node, vec3_t *itemMins,
 		children = &daabbtrees[numaabbtreenodes];
 		node->childCount = numaabbtreenodes;
 
-		AabbBuildSubtree( node, itemMins, itemMaxs, indices, 0, frontCount );
+		AabbAddChildNodes( node, itemMins, itemMaxs, indices, 0, frontCount );
 		if ( frontCount < backStart ) {
-			AabbBuildSubtree( node, itemMins, itemMaxs, indices,
+			AabbAddChildNodes( node, itemMins, itemMaxs, indices,
 				frontCount, backStart - frontCount );
 		}
-		AabbBuildSubtree( node, itemMins, itemMaxs, indices,
+		AabbAddChildNodes( node, itemMins, itemMaxs, indices,
 			backStart, node->surfaceCount - backStart );
 	}
 
 	node->childCount = numaabbtreenodes - node->childCount;
 	for ( i = 0; i < node->childCount; i++ ) {
-		AabbBuildTree_r( &children[i], itemMins, itemMaxs,
+		AabbSplitNode_r( &children[i], itemMins, itemMaxs,
 			indices + children[i].firstSurface - node->firstSurface );
 	}
 }
@@ -5302,7 +5302,7 @@ static void BuildTriSoupAABBTree( triSoupAabbNode_t *root ) {
 				bounds[0][i], bounds[1][i] );
 		}
 	}
-	AabbBuildTree_r( root, bounds[0], bounds[1], indices );
+	AabbSplitNode_r( root, bounds[0], bounds[1], indices );
 	soup = &triangleSurfaces[root->firstSurface];
 	originalSoups = malloc( root->surfaceCount * sizeof(*originalSoups) );
 	memcpy( originalSoups, soup, root->surfaceCount * sizeof(*soup) );
@@ -5323,10 +5323,10 @@ static void BuildTriSoupAABBTree( triSoupAabbNode_t *root ) {
 
 /*
 =============
-BuildTriangleSoups
+BuildSoupsAndAabbTrees
 =============
 */
-void BuildTriangleSoups( tree_t *tree ) {
+void BuildSoupsAndAabbTrees( tree_t *tree ) {
 	int first;
 	int end;
 	int currentCell;
@@ -5341,7 +5341,7 @@ void BuildTriangleSoups( tree_t *tree ) {
 			ClearBounds( cullGroups[i].mins, cullGroups[i].maxs );
 		}
 	}
-	qsort( triRecords, numTriangles, sizeof(*triRecords), CompareTriRecordHeaders );
+	qsort( triRecords, numTriangles, sizeof(*triRecords), TriRecordCompare );
 	currentCell = -1;
 	currentCullGroup = -1;
 	for ( first = 0; first < numTriangles; first = end ) {
@@ -5377,8 +5377,8 @@ void BuildTriangleSoups( tree_t *tree ) {
 				cullGroups[currentCullGroup].surfaceCount = 0;
 			}
 		}
-		GroupAndMergeTriSubgroups( &triRecords[first], end - first );
-		EmitTriangleSoup( &triRecords[first], end - first, tree );
+		ClusterTriRecords( &triRecords[first], end - first );
+		EmitSoupFromRecords( &triRecords[first], end - first, tree );
 		if ( !entity_num ) {
 			if ( triRecords[first].drawOrder >= 0 ) {
 				root = &daabbtrees[dcells[triRecords[first].drawOrder].aabbTreeIndex];
@@ -5506,13 +5506,13 @@ void TesselateWinding( triSurf_t *surface, int cellIndex, int cullGroupIndex ) {
             cellIndex, cullGroupIndex, surface->props );
         return;
     }
-    TrisInsertSplitPoints( &winding, normal, &originalWinding );
-    TrisRemoveDegenerateEdges( winding, originalWinding );
+    FixWindingSelfTJunctions( &winding, normal, &originalWinding );
+    RemoveDegenerateTris( winding, originalWinding );
     if ( winding->numpoints < 3 )
         return;
     surface->originalWinding = originalWinding;
     surface->winding = winding;
-    GetProjectionAxes( normal, &axisX, &axisY );
+    ProjectionCoordsFromNormal( normal, &axisX, &axisY );
     while ( winding->numpoints > 3 ) {
         bestEar = -1;
         count = winding->numpoints;
@@ -5524,12 +5524,12 @@ void TesselateWinding( triSurf_t *surface, int cellIndex, int cullGroupIndex ) {
                 do {
                     next = ( ear + 1 ) % count;
                     previous = ( ear + winding->numpoints - 1 ) % winding->numpoints;
-                    SetupTriSide( winding->p[previous], winding->p[next], axisX, axisY, sideBA );
+                    ComputeEdgeLine2D( winding->p[previous], winding->p[next], axisX, axisY, sideBA );
                     if ( !( winding->p[ear][axisY] * sideBA[0]
                     - winding->p[ear][axisX] * sideBA[1] <= sideBA[2] ) ) {
-                        SetupTriSide( winding->p[next], winding->p[ear], axisX, axisY, sideAC );
-                        SetupTriSide( winding->p[ear], winding->p[previous], axisX, axisY, sideCB );
-                        cosine = TrisLargestAngleCosine( sideBA, sideAC, sideCB );
+                        ComputeEdgeLine2D( winding->p[next], winding->p[ear], axisX, axisY, sideAC );
+                        ComputeEdgeLine2D( winding->p[ear], winding->p[previous], axisX, axisY, sideCB );
+                        cosine = TriangleMinAngleCosine( sideBA, sideAC, sideCB );
                         if ( !( cosine >= bestCosine ) ) {
                             firstScan = ( next + 1 ) % count;
                             scanPrevious = next, scan = ( next + 1 ) % count, scanNext = ( next + 2 ) % count;
@@ -5544,17 +5544,17 @@ void TesselateWinding( triSurf_t *surface, int cellIndex, int cullGroupIndex ) {
                                     if ( winding->p[scan][axisX] == winding->p[previous][axisX] && winding->p[scan][axisY] == winding->p[previous][axisY] ) {
                                         if ( !TrisCheckBothEdges( sideBA, sideCB, sideAC, winding->p[scanPrevious][axisX], winding->p[scanPrevious][axisY], winding->p[scanNext][axisX], winding->p[scanNext][axisY] ) ) valid = qfalse;
                                         else if ( !pass ) {
-                                            if ( TrisVerticesCoincident2D( scanPrevious, axisX, winding, axisY, ear, scanNext, ( count + previous - 1 ) % count ) ) valid = qfalse;
+                                            if ( PointPairsCoincident2D( scanPrevious, axisX, winding, axisY, ear, scanNext, ( count + previous - 1 ) % count ) ) valid = qfalse;
                                         }
                                     } else if ( winding->p[scan][axisX] == winding->p[ear][axisX] && winding->p[scan][axisY] == winding->p[ear][axisY] ) {
                                         if ( !TrisCheckBothEdges( sideCB, sideAC, sideBA, winding->p[scanPrevious][axisX], winding->p[scanPrevious][axisY], winding->p[scanNext][axisX], winding->p[scanNext][axisY] ) ) valid = qfalse;
                                         else if ( !pass ) {
-                                            if ( TrisVerticesCoincident2D( scanPrevious, axisX, winding, axisY, next, scanNext, previous ) ) valid = qfalse;
+                                            if ( PointPairsCoincident2D( scanPrevious, axisX, winding, axisY, next, scanNext, previous ) ) valid = qfalse;
                                         }
                                     } else if ( winding->p[scan][axisX] == winding->p[next][axisX] && winding->p[scan][axisY] == winding->p[next][axisY] ) {
                                         if ( !TrisCheckBothEdges( sideAC, sideBA, sideCB, winding->p[scanPrevious][axisX], winding->p[scanPrevious][axisY], winding->p[scanNext][axisX], winding->p[scanNext][axisY] ) ) valid = qfalse;
                                         else if ( !pass ) {
-                                            if ( TrisVerticesCoincident2D( scanPrevious, axisX, winding, axisY, firstScan, scanNext, ear ) ) valid = qfalse;
+                                            if ( PointPairsCoincident2D( scanPrevious, axisX, winding, axisY, firstScan, scanNext, ear ) ) valid = qfalse;
                                         }
                                     } else { valid = qfalse; }
                                     if ( !valid )
@@ -5578,7 +5578,7 @@ void TesselateWinding( triSurf_t *surface, int cellIndex, int cullGroupIndex ) {
         removePrevious = ( winding->numpoints + bestEar - 1 ) % winding->numpoints;
         EmitTriRecord( winding, removePrevious, bestEar, next, originalWinding,
             cellIndex, cullGroupIndex, surface->props );
-        TesselateRemoveVertex( winding, originalWinding, removePrevious, bestEar, next,
+        RemoveWindingVertex( winding, originalWinding, removePrevious, bestEar, next,
             normal );
         if ( bestEar != winding->numpoints ) {
             next--;
@@ -5593,7 +5593,7 @@ void TesselateWinding( triSurf_t *surface, int cellIndex, int cullGroupIndex ) {
         || ( winding->p[beforePrevious][0] == winding->p[next][0]
         && winding->p[beforePrevious][1] == winding->p[next][1]
         && winding->p[beforePrevious][2] == winding->p[next][2] ) )
-            TrisRemoveDegenerateEdges( winding, originalWinding );
+            RemoveDegenerateTris( winding, originalWinding );
     }
     if ( winding->numpoints == 3 )
         EmitTriRecord( winding, 0, 1, 2, originalWinding,
@@ -5658,9 +5658,9 @@ static void Tris_EmitWindingAsDrawSurf( tree_t *tree, winding_t *winding, mapDra
     if ( surface->shaderInfo->autosprite ) {
         TriangulateUnsplittableWinding( props, winding, tree, surface->cullgroup );
     } else if ( surface->cullgroup >= 0 ) {
-        PrependTriSurfToCell( winding, props, numCells + surface->cullgroup );
+        AddTriSurfToCell( winding, props, numCells + surface->cullgroup );
     } else if ( entity_num > 0 ) {
-        PrependTriSurfToCell( winding, props, 0 );
+        AddTriSurfToCell( winding, props, 0 );
     } else {
         FilterTriSurfIntoTree( winding, props, tree->headnode );
     }
@@ -5717,11 +5717,11 @@ static void Tris_FindPatchWindings( mapDrawSurface_t *surface, tree_t *tree ) {
                     lightmap[0], lmapS[1], lmapT[1], colors[0], colorR[1], colorG[1], colorB[1], colorA[1] );
             } else { FreeWinding( windings[1] ); }
             if ( valid[0] && valid[1] &&
-                SurfacesCoplanar( windings[0], plane[0], plane[1], plane[0][3], windings[1], plane[1][3] ) &&
-                TexVecsMatch( texS[0], texS[1], surface->shaderInfo->width ) &&
-                TexVecsMatch( texT[0], texT[1], surface->shaderInfo->height ) &&
-                TexVecsMatch( lmapS[0], lmapS[1], 512 ) &&
-                TexVecsMatch( lmapT[0], lmapT[1], 512 ) ) {
+                WindingsCoplanar( windings[0], plane[0], plane[1], plane[0][3], windings[1], plane[1][3] ) &&
+                TexVecsEquivalent( texS[0], texS[1], surface->shaderInfo->width ) &&
+                TexVecsEquivalent( texT[0], texT[1], surface->shaderInfo->height ) &&
+                TexVecsEquivalent( lmapS[0], lmapS[1], 512 ) &&
+                TexVecsEquivalent( lmapT[0], lmapT[1], 512 ) ) {
                 VectorCopy( windings[1]->p[1], windings[0]->p[3] );
                 windings[0]->numpoints = 4;
                 FreeWinding( windings[1] );
@@ -5768,10 +5768,10 @@ static void Tris_FindIndexedMeshWindings( mapDrawSurface_t *surface, tree_t *tre
 
 /*
 =============
-Tris_FindBrushWindings
+Tris_WindingFromBrushSide
 =============
 */
-static void Tris_FindBrushWindings( mapDrawSurface_t *surface, tree_t *tree ) {
+static void Tris_WindingFromBrushSide( mapDrawSurface_t *surface, tree_t *tree ) {
     winding_t *winding;
     int i;
     float scale;
@@ -5832,7 +5832,7 @@ static void Tris_FindWindings( entity_t *entity, tree_t *tree ) {
         } else if ( surface->triangleSoup ) {
             Tris_FindIndexedMeshWindings( surface, tree );
         } else if ( !surface->flareSurface ) {
-            Tris_FindBrushWindings( surface, tree );
+            Tris_WindingFromBrushSide( surface, tree );
         }
     }
     numOriginalDrawVerts = numTriIntermediateVerts;
@@ -5902,10 +5902,10 @@ static void TriangulateEntity( entity_t *entity, tree_t *tree ) {
 	if ( !entity_num ) {
 		printf( "finding index mapping and snapping vertices...\n" );
 	}
-	TrisGenerateAllVertices();
+	GenerateAllTriSurfVerts();
 	BuildTriangleVertexRemap();
-	TrisSnapNearbyVertices();
-	ApplyMergeMap();
+	MergeCloseWindingVerts();
+	SnapMergedVerts();
 	RebuildTriangleWindings();
 	if ( !entity_num ) {
 		printf( "triangulating all windings...\n" );
@@ -5931,12 +5931,12 @@ void EmitDrawSurfaces( entity_t *entity, tree_t *tree ) {
     SimplifyTriangleMesh();
     if ( !entity_num ) printf( "emitting triangles...\n" );
     SmoothTriangleNormals();
-    BuildTriangleSoups( tree );
+    BuildSoupsAndAabbTrees( tree );
     if ( !entity_num ) {
         printf( "%i vertices couldn't be merged because the textures point different ways\n", numTextureDirectionMismatches );
         EmitCellPortalsAndOccluders( entity, tree->headnode );
     }
-    FreeTriSurfProps();
+    ClearTriSurfPropsHash();
     trisCurrentTree = NULL;
 }
 

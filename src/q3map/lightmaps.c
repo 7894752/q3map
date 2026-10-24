@@ -443,10 +443,10 @@ static void ColorLightmapBlock( int lightmapNum, int x, int y, int w, int h ) {
 
 /*
 =============
-FindFreeBlock
+AllocBestFitBlock
 =============
 */
-qboolean FindFreeBlock( int w, int h, int *lightmapNum, int *x,
+qboolean AllocBestFitBlock( int w, int h, int *lightmapNum, int *x,
 	int *y, qboolean *rotated, lightmapRef_t *allowed ) {
 	lightmapBlock_t *block, *best;
 	lightmapRef_t *ref;
@@ -578,12 +578,12 @@ AllocLightmapRectangle
 */
 static qboolean AllocLightmapRectangle( int w, int h, int *lightmapNum, int *x,
 	int *y, qboolean *rotated ) {
-	if ( !FindFreeBlock( w, h, lightmapNum, x, y, rotated,
+	if ( !AllocBestFitBlock( w, h, lightmapNum, x, y, rotated,
 		currentMaterialSet->lightmaps ) ) {
 		if ( !currentMaterialSet->lightmaps ||
-			!FindFreeBlock( w, h, lightmapNum, x, y, rotated, NULL ) ) {
+			!AllocBestFitBlock( w, h, lightmapNum, x, y, rotated, NULL ) ) {
 			PrepareNewLightmap();
-			if ( !FindFreeBlock( w, h, lightmapNum, x, y, rotated, NULL ) ) {
+			if ( !AllocBestFitBlock( w, h, lightmapNum, x, y, rotated, NULL ) ) {
 				return qfalse;
 			}
 		}
@@ -1000,10 +1000,10 @@ void AllocateLightmapForPatch( mapDrawSurface_t *ds ) {
 /* Allocate one projected rectangle for a circular compatible surface group. */
 /*
 =============
-AllocateLightmapForGroup
+AllocateSharedLightmap
 =============
 */
-void AllocateLightmapForGroup( mapDrawSurface_t *ds ) {
+void AllocateSharedLightmap( mapDrawSurface_t *ds ) {
 	vec3_t mins, maxs, size, delta, origin, normalized;
 	vec3_t vecs[2], scaled;
 	mapDrawSurface_t *group;
@@ -1123,7 +1123,7 @@ void AllocateLightmapForSurface( mapDrawSurface_t *ds ) {
 	qboolean rotated;
 	float d, len, scale, sampleScale, s, t;
 	if ( ds->patch ) { AllocateLightmapForPatch( ds ); return; }
-	if ( ds->nextOnLightmapGroup != ds ) { AllocateLightmapForGroup( ds ); return; }
+	if ( ds->nextOnLightmapGroup != ds ) { AllocateSharedLightmap( ds ); return; }
 	if ( ds->triangleSoup ) { AllocateLightmapForTriangleSoup( ds ); return; }
 	sampleSize = SurfaceLightmapSampleSize( ds );
 	plane = &mapplanes[ds->side->planenum];

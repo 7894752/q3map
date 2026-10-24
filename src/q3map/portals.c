@@ -23,9 +23,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "qbsp.h"
 #include "../universal/com_math.h"
 
-void PortalWarning( const char *message, winding_t *w, bspbrush_t *brush );
+void PrintPortalWarning( const char *message, winding_t *w, bspbrush_t *brush );
 /* forward declaration; kept so the build matches the original binary */
-void MatchBrushSideToPortals_r( side_t *side, bspbrush_t *brush, plane_t *sidePlanes, node_t *node );
+void AssignPortalBrushSide_r( side_t *side, bspbrush_t *brush, plane_t *sidePlanes, node_t *node );
 
 
 int		c_active_portals;
@@ -929,17 +929,17 @@ extern void PortalizeNode( tree_t *tree, int skipBuild );
 extern void LeakFileBetweenNodes( node_t *node0, node_t *node1 );
 
 
-extern void CollectCellPortals( node_t *node );
+extern void AddLeafCellPortals_r( node_t *node );
 extern void EmitCellPortals( void );
 
 /* Warn about a portal brush side. */
 
 /*
 =============
-PortalWarning
+PrintPortalWarning
 =============
 */
-void PortalWarning( const char *message, winding_t *w, bspbrush_t *brush ) {
+void PrintPortalWarning( const char *message, winding_t *w, bspbrush_t *brush ) {
     vec3_t center;
     float scale;
     int i;
@@ -977,10 +977,10 @@ qboolean PointBehindPlanes( const vec3_t point, const plane_t *planes, int plane
 
 /*
 =============
-MatchBrushSideToPortals_r
+AssignPortalBrushSide_r
 =============
 */
-void MatchBrushSideToPortals_r( side_t *side, bspbrush_t *brush,
+void AssignPortalBrushSide_r( side_t *side, bspbrush_t *brush,
                               plane_t *sidePlanes, node_t *node ) {
 	portal_t *p;
 	plane_t *plane;
@@ -992,8 +992,8 @@ void MatchBrushSideToPortals_r( side_t *side, bspbrush_t *brush,
 	qboolean overlaps;
 
 	if (node->planenum != PLANENUM_LEAF) {
-		MatchBrushSideToPortals_r(side, brush, sidePlanes, node->children[0]);
-		MatchBrushSideToPortals_r(side, brush, sidePlanes, node->children[1]);
+		AssignPortalBrushSide_r(side, brush, sidePlanes, node->children[0]);
+		AssignPortalBrushSide_r(side, brush, sidePlanes, node->children[1]);
 		return;
 	}
 	plane = &mapplanes[side->planenum];
@@ -1050,10 +1050,10 @@ void MatchBrushSideToPortals_r( side_t *side, bspbrush_t *brush,
  * with the existing BSP portal topology. */
 /*
 =============
-BuildSidePlanes
+AssignPortalBrushSides
 =============
 */
-void BuildSidePlanes( bspbrush_t *brushList, tree_t *tree ) {
+void AssignPortalBrushSides( bspbrush_t *brushList, tree_t *tree ) {
     bspbrush_t *brush;
     side_t *side;
     winding_t *w;
@@ -1079,9 +1079,9 @@ void BuildSidePlanes( bspbrush_t *brushList, tree_t *tree ) {
                 sidePlanes[j].dist = DotProduct( w->p[j], sidePlanes[j].normal );
             }
             side->portalIgnored = qtrue;
-            MatchBrushSideToPortals_r( side, brush, sidePlanes, tree->headnode );
+            AssignPortalBrushSide_r( side, brush, sidePlanes, tree->headnode );
             if ( side->portalIgnored ) {
-                PortalWarning( "is not at a BSP split or is floating", side->visibleHull, brush );
+                PrintPortalWarning( "is not at a BSP split or is floating", side->visibleHull, brush );
             }
             side->portalCellCount[0] = 0;
             side->portalCellCount[1] = 0;
@@ -1092,23 +1092,23 @@ void BuildSidePlanes( bspbrush_t *brushList, tree_t *tree ) {
 
 /*
 =============
-InitBspTreeNodes
+InitNodeCells_r
 =============
 */
-void InitBspTreeNodes( node_t *node ) {
+void InitNodeCells_r( node_t *node ) {
 	node->bspCell = node->opaque ? -1 : -2;
 	if (node->planenum != PLANENUM_LEAF) {
-		InitBspTreeNodes(node->children[0]);
-		InitBspTreeNodes(node->children[1]);
+		InitNodeCells_r(node->children[0]);
+		InitNodeCells_r(node->children[1]);
 	}
 }
 
 /*
 =============
-BuildBspTree_r
+FloodOutsideCells_r
 =============
 */
-void BuildBspTree_r( node_t *node ) {
+void FloodOutsideCells_r( node_t *node ) {
 	portal_t *p;
 	int s;
 
@@ -1119,16 +1119,16 @@ void BuildBspTree_r( node_t *node ) {
 	for (p = node->portals; p; p = p->next[s]) {
 		s = (p->nodes[1] == node);
 		if (!p->side)
-			BuildBspTree_r(p->nodes[!s]);
+			FloodOutsideCells_r(p->nodes[!s]);
 	}
 }
 
 /*
 =============
-SplitBrushList
+FloodCell_r
 =============
 */
-void SplitBrushList( node_t *node ) {
+void FloodCell_r( node_t *node ) {
 	portal_t *p;
 	int s, i;
 
@@ -1144,7 +1144,7 @@ void SplitBrushList( node_t *node ) {
 	for (p = node->portals; p; p = p->next[s]) {
 		s = (p->nodes[1] == node);
 		if (!p->side)
-			SplitBrushList(p->nodes[!s]);
+			FloodCell_r(p->nodes[!s]);
 		else if (p->nodes[!s]->bspCell == node->bspCell)
 			LeakFileBetweenNodes(p->nodes[0], p->nodes[1]);
 	}
@@ -1164,22 +1164,22 @@ void AssignBspCells( node_t *node ) {
 	if (node->bspCell != -2 || node->opaque)
 		return;
 	ClearBounds(dcells[numCells].mins, dcells[numCells].maxs);
-	SplitBrushList(node);
+	FloodCell_r(node);
 	numCells++;
 }
 
 /*
 =============
-FreeBspTree
+IgnoreSameCellPortals_r
 =============
 */
-void FreeBspTree( node_t *node ) {
+void IgnoreSameCellPortals_r( node_t *node ) {
 	portal_t *p;
 	int s;
 
 	if (node->planenum != PLANENUM_LEAF) {
-		FreeBspTree(node->children[0]);
-		FreeBspTree(node->children[1]);
+		IgnoreSameCellPortals_r(node->children[0]);
+		IgnoreSameCellPortals_r(node->children[1]);
 		return;
 	}
 	if (node->opaque)
@@ -1189,25 +1189,25 @@ void FreeBspTree( node_t *node ) {
 		if (p->side && !p->side->portalIgnored
 			&& p->nodes[0]->bspCell == p->nodes[1]->bspCell) {
 			p->side->portalIgnored = qtrue;
-			PortalWarning("has the same cell on both sides, portal ignored", p->side->visibleHull, p->brush);
+			PrintPortalWarning("has the same cell on both sides, portal ignored", p->side->visibleHull, p->brush);
 		}
 	}
 }
 
 /*
 =============
-CollectCellPortals
+AddLeafCellPortals_r
 =============
 */
-void CollectCellPortals( node_t *node ) {
+void AddLeafCellPortals_r( node_t *node ) {
 	portal_t *p;
 	cellPortal_t *cp;
 	DiskGfxCell *cell;
 	int s;
 
 	if (node->planenum != PLANENUM_LEAF) {
-		CollectCellPortals(node->children[0]);
-		CollectCellPortals(node->children[1]);
+		AddLeafCellPortals_r(node->children[0]);
+		AddLeafCellPortals_r(node->children[1]);
 		return;
 	}
 	if (node->opaque)
@@ -1444,7 +1444,7 @@ void EmitCellPortals( void ) {
 			}
 			if (cp->side->portalCellCount[orientation] == 1
 				&& cp->side->portalCellCount[orientation ^ 1] <= 1) {
-				PortalWarning("sees into two cells (aka portal t-junction)", cp->side->winding, cp->side->portalBrush);
+				PrintPortalWarning("sees into two cells (aka portal t-junction)", cp->side->winding, cp->side->portalBrush);
 				badPortals++;
 			}
 			cp->side->portalCellCount[orientation]++;
@@ -1471,7 +1471,7 @@ EmitCellPortalsAndOccluders
 */
 void EmitCellPortalsAndOccluders( entity_t *entity, node_t *headnode ) {
 	memset( cell_portals, 0, sizeof( cell_portals ) );
-	CollectCellPortals( headnode );
+	AddLeafCellPortals_r( headnode );
 	EmitOccluders( entity );
 	EmitCellPortals();
 }
@@ -1504,14 +1504,14 @@ void RemapOccluderPlanes( const int *planeMap ) {
 
 /*
 =============
-NodeForBounds
+PropagateNodeCells_r
 =============
 */
-int NodeForBounds( node_t *node ) {
+int PropagateNodeCells_r( node_t *node ) {
 	int cell;
 	if (node->planenum != PLANENUM_LEAF) {
-		cell = NodeForBounds(node->children[0]);
-		if (cell == NodeForBounds(node->children[1])) {
+		cell = PropagateNodeCells_r(node->children[0]);
+		if (cell == PropagateNodeCells_r(node->children[1])) {
 			node->bspCell = cell;
 			return cell;
 		}
@@ -1527,24 +1527,24 @@ PortalizeNode
 */
 void PortalizeNode( tree_t *tree, int skipBuild ) {
 	numCells = 0;
-	InitBspTreeNodes(tree->headnode);
+	InitNodeCells_r(tree->headnode);
 	if (!skipBuild) {
 		tree->outside_node.bspCell = -2;
-		BuildBspTree_r(&tree->outside_node);
+		FloodOutsideCells_r(&tree->outside_node);
 	}
 	AssignBspCells(tree->headnode);
-	FreeBspTree(tree->headnode);
-	NodeForBounds(tree->headnode);
+	IgnoreSameCellPortals_r(tree->headnode);
+	PropagateNodeCells_r(tree->headnode);
 	qprintf("%5i unique cells\n", numCells);
 }
 
 /*
 =============
-PortalizeWorld
+BuildPortalsAndCells
 =============
 */
-void PortalizeWorld( bspbrush_t *brushList, tree_t *tree, int skipBuild ) {
+void BuildPortalsAndCells( bspbrush_t *brushList, tree_t *tree, int skipBuild ) {
 	qprintf( "----- Building Portals and Cells -----\n" );
-	BuildSidePlanes( brushList, tree );
+	AssignPortalBrushSides( brushList, tree );
 	PortalizeNode( tree, skipBuild );
 }

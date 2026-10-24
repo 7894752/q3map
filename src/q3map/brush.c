@@ -248,7 +248,7 @@ extern double_winding_t *BaseWindingForPlaneDouble(vec3_t normal, vec_t dist);
 extern void ChopWindingInPlaceDouble(double_winding_t **w, vec3_t normal, vec_t dist, vec_t epsilon);
 extern void SnapWindingToPlaneDouble(double_winding_t *w, vec3_t normal, vec_t dist);
 extern winding_t *WindingFromDouble(const double_winding_t *w);
-extern void FreeWindingDouble(double_winding_t *w);
+extern void FreeDoubleWinding(double_winding_t *w);
 extern void CheckWindingPlane(winding_t *w, vec3_t normal, vec_t dist);
 
 
@@ -297,7 +297,7 @@ qboolean CreateBrushWindings (bspbrush_t *brush)
 			plane = &mapplanes[side->planenum];
 			SnapWindingToPlaneDouble (w, plane->normal, plane->dist);
 			side->winding = WindingFromDouble (w);
-			FreeWindingDouble (w);
+			FreeDoubleWinding (w);
 		}
 		CheckWindingPlane (side->winding, mapplanes[side->planenum].normal,
 			mapplanes[side->planenum].dist);

@@ -35,8 +35,8 @@ they are names that happen to fit, and any other name with the same hash slot wo
 
 ## 4. Function names without a source (Plausible)
 Most function names are original (studio releases, or symbol tables of other retail builds of the game). A few are descriptive guesses because no source
-names them: `Perp2D`, `NormalFromPoints`, `RoundToPrecision`, `GuessMeshPlane`, `FreeBspTree` (it frees nothing), the polylib `...Double` family
-(`AllocWindingDouble`, `BaseWindingForPlaneDouble`, ...), `CheckWindingPlane`, `PointsNearLine`, `WindingPlaneAverage`, and the CoD-specific q3map
+names them: `Perp2D`, `NormalFromPoints`, `RoundToPrecision`, `GuessMeshPlane`, `IgnoreSameCellPortals_r` (it frees nothing), the polylib `...Double` family
+(`AllocDoubleWinding`, `BaseWindingForPlaneDouble`, ...), `CheckWindingPlane`, `ColinearEdge`, `WindingPlaneAverage`, and the CoD-specific q3map
 helpers in `tris`, `lightmaps`, `patch`, `portals`, `surface`, `terrain` (their names describe what the code does).
 
 ## 5. Definition order and explicit zero initialisers (Proven order, neutral spelling)
@@ -58,13 +58,13 @@ is a reconstruction (other spellings that compile to the same bytes may exist, a
   `CollectCollapseTriangles` and `UnparseEntitiesWithOrigins` (a dead store `originCopy`).
 - `visflow` `BasePortalVis`: the first loop reads the portal and point through block-scope `const` pointer copies; the plain Q3 `DotProduct` form gives a different
   term order. The second loop of the same function is plain Q3 code.
-- `patch` `CenterPatchLightmapCoords`: the y centre goes through a `double` accumulator, the x centre through `maxs[0] += mins[0]`; no symmetric spelling reproduces the
+- `patch` `RecenterPatchTexCoords`: the y centre goes through a `double` accumulator, the x centre through `maxs[0] += mins[0]`; no symmetric spelling reproduces the
   original's x87 register assignment (maxs[0] stays in a register for the whole loop).
 - Leftover tests and results: `portals` `EmitOccluders` calls `BoxOnPlaneSide` and discards the result (`if ( ... ) { }`; the call is naked asm and stays);
-  `writebsp` `EmitShader` has `if ( strstr( shader, "caulk" ) ) { }`, a test whose body was removed (the call stays); `patch` `EmitTerrainGroup` never uses the result of its
-  first `AllocTerrainBuffer`; `portals` `EmitOccluders` leaves its inner search loop with `goto vertexFound` (break-and-test spellings change the code at the same place).
+  `writebsp` `EmitShader` has `if ( strstr( shader, "caulk" ) ) { }`, a test whose body was removed (the call stays); `patch` `EmitTerrainPatchGroup` never uses the result of its
+  first `AllocStackOrHeap`; `portals` `EmitOccluders` leaves its inner search loop with `goto vertexFound` (break-and-test spellings change the code at the same place).
 - Initialisers and index tricks: `previous = 0` (`tris`, a counter initialised before a loop that sets it), the XOR swap of two indices (`tris`), `current[-1]` (`tris`,
-  a pointer used one element back), `ProcessCoronaLights` (`writebsp`), whose loop is written as `i + 1 < num_entities` over `&entities[1]`.
+  a pointer used one element back), `SetCoronaCutoffs` (`writebsp`), whose loop is written as `i + 1 < num_entities` over `&entities[1]`.
 
 ### 6.2 Double-precision intermediates
 Several functions compute in `double` where a `float` would do, as C code written without care for the x87 does. The promotion is visible in the bytes (extra
@@ -74,7 +74,7 @@ combinations were tried, only this one is exact) and `ParseTerrain` (`terrain`: 
 single expression).
 
 ### 6.3 Compiler-state and header constructs
-- `MatchBrushSideToPortals_r` forward prototype in `portals.c` (Proven needed, role understood): the prototype before the first use changes how the compiler
+- `AssignPortalBrushSide_r` forward prototype in `portals.c` (Proven needed, role understood): the prototype before the first use changes how the compiler
   schedules `EmitCellPortals`, so removing or moving it changes that function's code. The call site of the plane-distance computation uses a local pointer
   rather than a helper function; that is plausible original code. (An earlier version used a separate inline helper, which also produced a standalone copy
   that the original does not have.) An equivalent spelling also compiles identically: `d = DotProduct( w->p[i], plane->normal ) - (double)plane->dist;`
@@ -140,23 +140,23 @@ the published Quake III / RTCW / ET sources or from symbol tables of other build
 
 ### 9.3 Invented descriptive names (forced; the spelling carries no evidence)
 - Functions of the CoD-specific q3map code, each named after what it does. `portals`: `PointBehindPlanes`, `LeafBoundaryPlaneOrientation`,
-  `CellPortalPlaneForLeaf`, `BuildSidePlanes`, `InitBspTreeNodes`, `BuildBspTree_r`, `SplitBrushList`, `AssignBspCells`, `FreeBspTree`, `NodeForBounds`,
-  `CollectCellPortals`, `PortalizeNode`, `PortalizeWorld`, `FloodClassnameExcluded`, `RemapPortalPlanes`, `RemapOccluderPlanes`. `patch`: `AllocTerrainBuffer`,
-  `FreeTerrainBuffer`, `FindPatchDrawVert`, `AddPatchTriangle`, `MarkPatchNormalAxes`, `GuessPatchProjectionAxis`, `CenterPatchLightmapCoords`,
-  `EmitTerrainGroup`, `CompareTerrainPatches`. `surface`: `EmitPatchCollide`, `EmitTerrainCollide`, `FilterCollisionSurfsIntoTree`, `FilterPatchSurfIntoTree`,
+  `CellPortalPlaneForLeaf`, `AssignPortalBrushSides`, `InitNodeCells_r`, `FloodOutsideCells_r`, `FloodCell_r`, `AssignBspCells`, `IgnoreSameCellPortals_r`, `PropagateNodeCells_r`,
+  `AddLeafCellPortals_r`, `PortalizeNode`, `BuildPortalsAndCells`, `FloodClassnameExcluded`, `RemapPortalPlanes`, `RemapOccluderPlanes`. `patch`: `AllocStackOrHeap`,
+  `FreeStackOrHeap`, `FindPatchDrawVert`, `AddPatchTriangle`, `MarkPatchNormalAxes`, `GuessPatchProjectionAxis`, `RecenterPatchTexCoords`,
+  `EmitTerrainPatchGroup`, `PatchGroupCompare`. `surface`: `EmitPatchCollide`, `EmitTerrainCollide`, `FilterCollisionSurfsIntoTree`, `FilterPatchSurfIntoTree`,
   `FilterTriangleSoupIntoTree`. `shaders`: `LoadShaderImageFile`, `ParseShaderTypeFile`. `writebsp`: `RemapNodePlanes`, `RemapBrushPlanes`. Glue:
   `GenerateTriangleListGroups`, `GenerateTriangleStripGroups`, `RemapTriangleListIndices`.
 - `CheckWindingPlane` (`polylib`, was `WindingPlaneNoOp`): an empty three-argument stub called after side windings are built (`brush`, `surface`);
   Q3 only has `CheckWinding(w)`, so this name is invented for a compiled-out check.
 - Constants whose values come from code but have no name in the image: `MAX_TERRAIN_GROUP_TRIANGLES`, `MAX_TERRAIN_GROUP_VERTS`, `MAX_TERRAIN_PATCHES`,
-  `MAX_PATCH_TRIANGULATION_AXIS`, `PATCH_ST_EPSILON`, `MAX_MAP_CELLS`, `MAX_OCCLUDER_FACE_VERTS`. The flag tested before `WriteDebugSurfaceToFile` /
-  `WriteDebugSideToFile` is written `SURF_CASTSHADOW` (0x40000, the `castshadow` surfaceparm bit); that this bit gates the debug dump is Proven, why is unknown.
+  `MAX_PATCH_TRIANGULATION_AXIS`, `PATCH_ST_EPSILON`, `MAX_MAP_CELLS`, `MAX_OCCLUDER_FACE_VERTS`. The flag tested before `WriteTerrainSurfaceToPolyFile` /
+  `WriteSideToPolyFile` is written `SURF_CASTSHADOW` (0x40000, the `castshadow` surfaceparm bit); that this bit gates the debug dump is Proven, why is unknown.
 - `SURF_CASTSHADOW` (the bit that KisakCOD calls `SURF_NOCASTSHADOW`; the polarity in the original's surfaceparm table is `castshadow`) and the constant
   `lightmapBorder`.
 - `node_t.pad` (was `unusedLeafWord`): an unreferenced word at +0x44 of the 116-byte node, between `referencepoint` and the leaf fields.
 - Notable locals: `GuessPatchProjectionAxis` `firstOrigin/firstSecond/firstThird` and `secondOrigin/secondSecond/secondThird` (the vertices of the two
-  triangles of a terrain quad); `MatchBrushSideToPortals_r` `point` (= `w->p[i]`, a pointer copy that fixes the operand order of the dot product);
-  `EmitTerrainGroup` `triangles` (a write-only result: the original called `AllocTerrainBuffer` once more than it used).
+  triangles of a terrain quad); `AssignPortalBrushSide_r` `point` (= `w->p[i]`, a pointer copy that fixes the operand order of the dot product);
+  `EmitTerrainPatchGroup` `triangles` (a write-only result: the original called `AllocStackOrHeap` once more than it used).
 - Other workers' inventions (collected): `hunkUsed_t` fields `mark` and `tempMark` (`com_memory`; CoD2 and CoD4 have only `{permanent, temp}`, the image has two
   extra words); of the `Hunk_*`/`Z_*` names only `Hunk_SetHighTempMark`, `Hunk_ClearToHighTempMark`, `Hunk_HighMarkIsSet`, `Hunk_CommitTempMemory` and
   `Hunk_SetLowUsedInternal` are descriptive guesses (the rest, including `Hunk_ClearData`, `hunk_low`, `hunk_high`, `s_hunkData`, `infoParm_t`/`infoParms` and

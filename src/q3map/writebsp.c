@@ -31,7 +31,7 @@ void EmitLeaf( node_t *node );
 
 /* Forward declarations. */
 void EmitLeaf( node_t *node );
-void ProcessCoronaLights( void );
+void SetCoronaCutoffs( void );
 int	EmitShader( const char *shader, int contents );
 void SetModelNumbers (void);
 void SetLightStyles (void);
@@ -239,10 +239,10 @@ void SetLightStyles (void)
 
 /*
 =============
-ProcessCoronaLights
+SetCoronaCutoffs
 =============
 */
-void ProcessCoronaLights( void ) {
+void SetCoronaCutoffs( void ) {
     int i, j;
     entity_t *ent, *ent2;
     const char *value;

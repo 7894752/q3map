@@ -50,7 +50,7 @@ void SetQdirFromPath(const char *path, const char *baseDir);
 char *ExpandArg(const char *path);
 char *ExpandGamePath(const char *path);
 char *ExpandPath(const char *path);
-void FS_InitFilesystemFromArgs( const char *basepath, const char *game, const char *basegame );
+void FS_InitToolFilesystem( const char *basepath, const char *game, const char *basegame );
 void qprintf( const char *format, ... );
 void _printf( const char *format, ... );
 void    StripExtension (char *path);
@@ -588,10 +588,10 @@ char* StrDup(const char* pStr)
 
 /*
 ================
-FS_InitFilesystemFromArgs
+FS_InitToolFilesystem
 ================
 */
-void FS_InitFilesystemFromArgs( const char *basepath, const char *game, const char *basegame ) {
+void FS_InitToolFilesystem( const char *basepath, const char *game, const char *basegame ) {
 	Swap_Init();
 	Cvar_Init();
 	if ( basepath ) {

@@ -55,7 +55,7 @@ void PrintCtrl( vec3_t ctrl[9] ) {
 	}
 }
 
-static void CenterPatchLightmapCoords(mapDrawSurface_t *ds);
+static void RecenterPatchTexCoords(mapDrawSurface_t *ds);
 
 char *Com_Parse(char **data_p);
 void Com_UngetToken(void);
@@ -63,10 +63,10 @@ extern int currentEntNum;
 
 /*
 =============
-AllocTerrainBuffer
+AllocStackOrHeap
 =============
 */
-static void *AllocTerrainBuffer( int count, int capacity, void *buffer, int elementSize ) {
+static void *AllocStackOrHeap( int count, int capacity, void *buffer, int elementSize ) {
 	if ( count <= capacity )
 		return buffer;
 	return malloc( count * elementSize );
@@ -77,10 +77,10 @@ int VectorCompareEpsilon( const vec3_t a, const vec3_t b );
 
 /*
 =============
-FreeTerrainBuffer
+FreeStackOrHeap
 =============
 */
-static void FreeTerrainBuffer( void *buffer, void *stackBuffer ) {
+static void FreeStackOrHeap( void *buffer, void *stackBuffer ) {
 	if ( buffer != stackBuffer )
 		free( buffer );
 }
@@ -334,10 +334,10 @@ void TriangulatePatch( parseMesh_t **patchEntry, int *triangleCount,
 #undef MAX_PATCH_TRIANGULATION_AXIS
 /*
 =============
-CompareTerrainPatches
+PatchGroupCompare
 =============
 */
-int CompareTerrainPatches( const void *a, const void *b ) {
+int PatchGroupCompare( const void *a, const void *b ) {
 	const terrainPatchEntry_t *first = a, *second = b;
 	if (first->patch->contents != second->patch->contents)
 		return first->patch->contents - second->patch->contents;
@@ -431,14 +431,14 @@ int GuessPatchProjectionAxis(parseMesh_t *patch)
 }
 
 void RoundLightmapBounds(int sampleSize, vec3_t mins, vec3_t maxs, vec3_t size);
-void WriteDebugSurfaceToFile(terrainSurface_t *terrain);
+void WriteTerrainSurfaceToPolyFile(terrainSurface_t *terrain);
 
 /*
 =============
-CenterPatchLightmapCoords
+RecenterPatchTexCoords
 =============
 */
-static void CenterPatchLightmapCoords(mapDrawSurface_t *ds) {
+static void RecenterPatchTexCoords(mapDrawSurface_t *ds) {
 	float mins[2], maxs[2];
 	int i;
 	if (!ds || !ds->shaderInfo)
@@ -498,7 +498,7 @@ static mapDrawSurface_t *DrawSurfaceForTerrain(terrainSurface_t *terrain) {
 	ds->numVerts = terrain->numVerts;
 	ds->verts = malloc(ds->numVerts * sizeof(*ds->verts));
 	memcpy(ds->verts, terrain->verts, ds->numVerts * sizeof(*ds->verts));
-	CenterPatchLightmapCoords(ds);
+	RecenterPatchTexCoords(ds);
 	ds->lightmapNum = -1;
 	ds->fogNum = -1;
 	ds->cullgroup = terrain->cullgroup;
@@ -617,7 +617,7 @@ void SubdivideTerrain(entity_t *entity, drawVert_t *verts, int vertexCount,
 	memcpy(terrain->indexes, indices, terrain->numIndexes * sizeof(*terrain->indexes));
 	if (terrain->shaderInfo->surfaceFlags & SURF_NODRAW) {
 		if (terrain->shaderInfo->surfaceFlags & SURF_CASTSHADOW)
-			WriteDebugSurfaceToFile(terrain);
+			WriteTerrainSurfaceToPolyFile(terrain);
 	} else {
 		DrawSurfaceForTerrain(terrain);
 	}
@@ -625,10 +625,10 @@ void SubdivideTerrain(entity_t *entity, drawVert_t *verts, int vertexCount,
 
 /*
 =============
-EmitTerrainGroup
+EmitTerrainPatchGroup
 =============
 */
-void EmitTerrainGroup( entity_t *entity, terrainPatchEntry_t *patches, int patchCount ) {
+void EmitTerrainPatchGroup( entity_t *entity, terrainPatchEntry_t *patches, int patchCount ) {
 	struct {
 		unsigned short indexBuffer[MAX_TERRAIN_GROUP_TRIANGLES];
 		unsigned short triangleBuffer[MAX_TERRAIN_GROUP_TRIANGLES];
@@ -648,11 +648,11 @@ void EmitTerrainGroup( entity_t *entity, terrainPatchEntry_t *patches, int patch
 	}
 
 	/* the result is never read; the call is kept as in the original */
-	triangles = AllocTerrainBuffer( triangleCount, MAX_TERRAIN_GROUP_TRIANGLES,
+	triangles = AllocStackOrHeap( triangleCount, MAX_TERRAIN_GROUP_TRIANGLES,
 		scratch.triangleBuffer, sizeof( unsigned short ) );
-	indices = AllocTerrainBuffer( 3 * triangleCount, MAX_TERRAIN_GROUP_TRIANGLES,
+	indices = AllocStackOrHeap( 3 * triangleCount, MAX_TERRAIN_GROUP_TRIANGLES,
 		scratch.indexBuffer, sizeof( unsigned short ) );
-	verts = AllocTerrainBuffer( vertexCount, MAX_TERRAIN_GROUP_VERTS,
+	verts = AllocStackOrHeap( vertexCount, MAX_TERRAIN_GROUP_VERTS,
 		scratch.vertexBuffer, sizeof( drawVert_t ) );
 	for ( i = 0; i < patchCount; i++ ) {
 		TriangulatePatch( &patches[i].patch, &triangleCount, &vertexCount, verts, indices );
@@ -661,16 +661,16 @@ void EmitTerrainGroup( entity_t *entity, terrainPatchEntry_t *patches, int patch
 			patches[i].patch->mesh.lightmapSampleSize, patches[i].patch->cullgroup,
 			patches[i].projectionAxis );
 	}
-	FreeTerrainBuffer( indices, scratch.indexBuffer );
-	FreeTerrainBuffer( verts, scratch.vertexBuffer );
+	FreeStackOrHeap( indices, scratch.indexBuffer );
+	FreeStackOrHeap( verts, scratch.vertexBuffer );
 }
 
 /*
 =============
-ProcessEntityPatches
+ProcessTerrainPatches
 =============
 */
-void ProcessEntityPatches( entity_t *entity ) {
+void ProcessTerrainPatches( entity_t *entity ) {
 	terrainPatchEntry_t stackPatches[MAX_TERRAIN_PATCHES], *patches;
 	parseMesh_t *patch;
 	int patchCount, i, groupStart, groupSize;
@@ -682,7 +682,7 @@ void ProcessEntityPatches( entity_t *entity ) {
 	}
 	if ( !patchCount )
 		return;
-	patches = AllocTerrainBuffer( patchCount, MAX_TERRAIN_PATCHES,
+	patches = AllocStackOrHeap( patchCount, MAX_TERRAIN_PATCHES,
 		stackPatches, sizeof( stackPatches[0] ) );
 	patchCount = 0;
 	for ( patch = entity->patches; patch; patch = patch->next ) {
@@ -692,7 +692,7 @@ void ProcessEntityPatches( entity_t *entity ) {
 			patchCount++;
 		}
 	}
-	qsort( patches, patchCount, sizeof( patches[0] ), CompareTerrainPatches );
+	qsort( patches, patchCount, sizeof( patches[0] ), PatchGroupCompare );
 	groupStart = 0;
 	groupSize = 1;
 	for ( i = 1; i < patchCount; i++ ) {
@@ -703,13 +703,13 @@ void ProcessEntityPatches( entity_t *entity ) {
 			patches[i - 1].projectionAxis == patches[i].projectionAxis ) {
 			groupSize++;
 		} else {
-			EmitTerrainGroup( entity, &patches[groupStart], groupSize );
+			EmitTerrainPatchGroup( entity, &patches[groupStart], groupSize );
 			groupStart = i;
 			groupSize = 1;
 		}
 	}
-	EmitTerrainGroup( entity, &patches[groupStart], groupSize );
-	FreeTerrainBuffer( patches, stackPatches );
+	EmitTerrainPatchGroup( entity, &patches[groupStart], groupSize );
+	FreeStackOrHeap( patches, stackPatches );
 }
 
 
@@ -820,7 +820,7 @@ void PatchMapDrawSurfs( entity_t *e ) {
 		ds = DrawSurfaceForMesh( &scan->mesh, scan->isTerrain, scan->cullgroup );
 		ds->shaderInfo = scan->shaderInfo;
 		ds->contents = scan->contents;
-		CenterPatchLightmapCoords(ds);
+		RecenterPatchTexCoords(ds);
 		VectorCopy( bounds[0], ds->lightmapVecs[0] );
 		VectorCopy( bounds[1], ds->lightmapVecs[1] );
 	}

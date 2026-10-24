@@ -472,10 +472,10 @@ void WriteBSPFile( const char *filename ) {
 
 /*
 =============
-PrintBSPLumpSize
+PrintLumpUsage
 =============
 */
-void PrintBSPLumpSize(const char *name, int count, int size, float pctMultiplier)
+void PrintLumpUsage(const char *name, int count, int size, float pctMultiplier)
 {
     char buffer[16];
 
@@ -822,38 +822,38 @@ void PrintBSPFileSizes(int fileSize)
         ParseEntities();
     pct = 100.0f / fileSize;
 
-    PrintBSPLumpSize("models", nummodels, nummodels * COD_BSP_MODEL_BYTES, pct);
-    PrintBSPLumpSize("shaders", numShaders, numShaders * sizeof(dshader_t), pct);
-    PrintBSPLumpSize("brushes", numbrushes, numbrushes * sizeof(cod_bsp_brush_t), pct);
-    PrintBSPLumpSize("brushsides", numbrushsides, numbrushsides * sizeof(dbrushside_t), pct);
-    PrintBSPLumpSize("fogs", numFogs, numFogs * sizeof(dfog_t), pct);
-    PrintBSPLumpSize("planes", numplanes, numplanes * sizeof(dplane_t), pct);
-    PrintBSPLumpSize("entdata", num_entities, entdatasize, pct);
+    PrintLumpUsage("models", nummodels, nummodels * COD_BSP_MODEL_BYTES, pct);
+    PrintLumpUsage("shaders", numShaders, numShaders * sizeof(dshader_t), pct);
+    PrintLumpUsage("brushes", numbrushes, numbrushes * sizeof(cod_bsp_brush_t), pct);
+    PrintLumpUsage("brushsides", numbrushsides, numbrushsides * sizeof(dbrushside_t), pct);
+    PrintLumpUsage("fogs", numFogs, numFogs * sizeof(dfog_t), pct);
+    PrintLumpUsage("planes", numplanes, numplanes * sizeof(dplane_t), pct);
+    PrintLumpUsage("entdata", num_entities, entdatasize, pct);
     printf("\n");
 
-    PrintBSPLumpSize("nodes", numnodes, numnodes * sizeof(dnode_t), pct);
-    PrintBSPLumpSize("leafs", numleafs, numleafs * COD_BSP_LEAF_BYTES, pct);
-    PrintBSPLumpSize("leafbrushes", numleafbrushes, numleafbrushes * sizeof(int), pct);
-    PrintBSPLumpSize("leafsurfaces", numleafsurfaces, numleafsurfaces * sizeof(int), pct);
-    PrintBSPLumpSize("patchcollision", numPatchCollides, numPatchCollides * COD_BSP_PATCH_COLLISION_BYTES, pct);
-    PrintBSPLumpSize("collisionverts", numCollisionVerts, numCollisionVerts * COD_BSP_COLLISION_VERTEX_BYTES, pct);
-    PrintBSPLumpSize("collisionindexes", numCollisionIndexes, numCollisionIndexes * COD_BSP_COLLISION_INDEX_BYTES, pct);
-    PrintBSPLumpSize("drawverts", numDrawVerts, numDrawVerts * sizeof(drawVert_t), pct);
-    PrintBSPLumpSize("drawindexes", numDrawIndexes, numDrawIndexes * COD_BSP_DRAW_INDEX_BYTES, pct);
-    PrintBSPLumpSize("trianglesoups", numTriangleSurfaces, numTriangleSurfaces * sizeof(cod_bsp_tri_soup_t), pct);
-    PrintBSPLumpSize("lightmaps", numLightBytes / (COD_BSP_LIGHTMAP_WIDTH * COD_BSP_LIGHTMAP_HEIGHT * 3), numLightBytes, pct);
-    PrintBSPLumpSize("lights", numLights, numLights * COD_BSP_LIGHT_BYTES, pct);
-    PrintBSPLumpSize("lightindexes", numLightIndexes, numLightIndexes * COD_BSP_LIGHT_INDEX_BYTES, pct);
-    PrintBSPLumpSize("visibility", -1, numVisBytes, pct);
-    PrintBSPLumpSize("portalverts", numPortalVerts, numPortalVerts * COD_BSP_PORTAL_VERTEX_BYTES, pct);
-    PrintBSPLumpSize("occluders", numOccluders, numOccluders * COD_BSP_OCCLUDER_BYTES, pct);
-    PrintBSPLumpSize("occluderplanes", numOccluderPlanes, numOccluderPlanes * COD_BSP_OCCLUDER_PLANE_BYTES, pct);
-    PrintBSPLumpSize("occluderedges", numOccluderEdges, numOccluderEdges * COD_BSP_OCCLUDER_EDGE_BYTES, pct);
-    PrintBSPLumpSize("occluderindexes", numOccluderIndexes, numOccluderIndexes * COD_BSP_OCCLUDER_INDEX_BYTES, pct);
-    PrintBSPLumpSize("aabbtrees", numaabbtreenodes, numaabbtreenodes * COD_BSP_AABB_TREE_BYTES, pct);
-    PrintBSPLumpSize("cells", numCells, numCells * COD_BSP_CELL_BYTES, pct);
-    PrintBSPLumpSize("portals", numPortals, numPortals * COD_BSP_PORTAL_BYTES, pct);
-    PrintBSPLumpSize("cullgroups", numCullGroups, numCullGroups * COD_BSP_CULL_GROUP_BYTES, pct);
-    PrintBSPLumpSize("cullgroupindexes", numCullGroupIndexes, numCullGroupIndexes * COD_BSP_CULL_GROUP_INDEX_BYTES, pct);
+    PrintLumpUsage("nodes", numnodes, numnodes * sizeof(dnode_t), pct);
+    PrintLumpUsage("leafs", numleafs, numleafs * COD_BSP_LEAF_BYTES, pct);
+    PrintLumpUsage("leafbrushes", numleafbrushes, numleafbrushes * sizeof(int), pct);
+    PrintLumpUsage("leafsurfaces", numleafsurfaces, numleafsurfaces * sizeof(int), pct);
+    PrintLumpUsage("patchcollision", numPatchCollides, numPatchCollides * COD_BSP_PATCH_COLLISION_BYTES, pct);
+    PrintLumpUsage("collisionverts", numCollisionVerts, numCollisionVerts * COD_BSP_COLLISION_VERTEX_BYTES, pct);
+    PrintLumpUsage("collisionindexes", numCollisionIndexes, numCollisionIndexes * COD_BSP_COLLISION_INDEX_BYTES, pct);
+    PrintLumpUsage("drawverts", numDrawVerts, numDrawVerts * sizeof(drawVert_t), pct);
+    PrintLumpUsage("drawindexes", numDrawIndexes, numDrawIndexes * COD_BSP_DRAW_INDEX_BYTES, pct);
+    PrintLumpUsage("trianglesoups", numTriangleSurfaces, numTriangleSurfaces * sizeof(cod_bsp_tri_soup_t), pct);
+    PrintLumpUsage("lightmaps", numLightBytes / (COD_BSP_LIGHTMAP_WIDTH * COD_BSP_LIGHTMAP_HEIGHT * 3), numLightBytes, pct);
+    PrintLumpUsage("lights", numLights, numLights * COD_BSP_LIGHT_BYTES, pct);
+    PrintLumpUsage("lightindexes", numLightIndexes, numLightIndexes * COD_BSP_LIGHT_INDEX_BYTES, pct);
+    PrintLumpUsage("visibility", -1, numVisBytes, pct);
+    PrintLumpUsage("portalverts", numPortalVerts, numPortalVerts * COD_BSP_PORTAL_VERTEX_BYTES, pct);
+    PrintLumpUsage("occluders", numOccluders, numOccluders * COD_BSP_OCCLUDER_BYTES, pct);
+    PrintLumpUsage("occluderplanes", numOccluderPlanes, numOccluderPlanes * COD_BSP_OCCLUDER_PLANE_BYTES, pct);
+    PrintLumpUsage("occluderedges", numOccluderEdges, numOccluderEdges * COD_BSP_OCCLUDER_EDGE_BYTES, pct);
+    PrintLumpUsage("occluderindexes", numOccluderIndexes, numOccluderIndexes * COD_BSP_OCCLUDER_INDEX_BYTES, pct);
+    PrintLumpUsage("aabbtrees", numaabbtreenodes, numaabbtreenodes * COD_BSP_AABB_TREE_BYTES, pct);
+    PrintLumpUsage("cells", numCells, numCells * COD_BSP_CELL_BYTES, pct);
+    PrintLumpUsage("portals", numPortals, numPortals * COD_BSP_PORTAL_BYTES, pct);
+    PrintLumpUsage("cullgroups", numCullGroups, numCullGroups * COD_BSP_CULL_GROUP_BYTES, pct);
+    PrintLumpUsage("cullgroupindexes", numCullGroupIndexes, numCullGroupIndexes * COD_BSP_CULL_GROUP_INDEX_BYTES, pct);
 }
 

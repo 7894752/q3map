@@ -90,10 +90,10 @@ winding_t	*AllocWinding (int points)
 
 /*
 ==================
-AllocWindingDouble
+AllocDoubleWinding
 ==================
 */
-void *AllocWindingDouble (int points)
+void *AllocDoubleWinding (int points)
 {
 	void	*w;
 	int		s;
@@ -130,10 +130,10 @@ void FreeWinding (winding_t *w)
 
 /*
 =============
-FreeWindingDouble
+FreeDoubleWinding
 =============
 */
-void FreeWindingDouble(double_winding_t *w)
+void FreeDoubleWinding(double_winding_t *w)
 {
 	if (w->numpoints == 0xdeaddead)
 		Error("FreeWinding: freed a freed winding");
@@ -405,7 +405,7 @@ double_winding_t *BaseWindingForPlaneDouble(vec3_t normal, vec_t dist)
 	VectorScale(vup, MAX_WORLD_COORD, vup);
 	VectorScale(vright, MAX_WORLD_COORD, vright);
 
-	w = AllocWindingDouble(4);
+	w = AllocDoubleWinding(4);
 
 	VectorSubtract(org, vright, w->p[0]);
 	VectorAdd(w->p[0], vup, w->p[0]);
@@ -738,7 +738,7 @@ void ChopWindingInPlaceDouble(double_winding_t **inout, vec3_t normal, vec_t dis
 
 	if (!counts[0])
 	{
-		FreeWindingDouble(in);
+		FreeDoubleWinding(in);
 		*inout = NULL;
 		return;
 	}
@@ -746,7 +746,7 @@ void ChopWindingInPlaceDouble(double_winding_t **inout, vec3_t normal, vec_t dis
 		return;
 
 	maxpts = in->numpoints + 4;
-	f = AllocWindingDouble(maxpts);
+	f = AllocDoubleWinding(maxpts);
 
 	for (i=0 ; i<in->numpoints ; i++)
 	{
@@ -795,7 +795,7 @@ void ChopWindingInPlaceDouble(double_winding_t **inout, vec3_t normal, vec_t dis
 	if (f->numpoints > MAX_POINTS_ON_WINDING)
 		Error("ClipWinding: MAX_POINTS_ON_WINDING");
 
-	FreeWindingDouble(in);
+	FreeDoubleWinding(in);
 	*inout = f;
 }
 
@@ -1055,10 +1055,10 @@ void CheckWindingPlane( winding_t *w, vec3_t normal, vec_t dist ) {
 
 /*
 =============
-PointsNearLine
+ColinearEdge
 =============
 */
-int PointsNearLine( vec3_t pointA, vec3_t pointB, vec3_t lineEnd, vec_t tolerance ) {
+int ColinearEdge( vec3_t pointA, vec3_t pointB, vec3_t lineEnd, vec_t tolerance ) {
 	vec3_t delta, direction, projected;
 	vec_t projection, distance;
 

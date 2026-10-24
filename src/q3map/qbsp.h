@@ -198,7 +198,7 @@ typedef struct node_s {
 
 	int				occupied;	// 1 or greater can reach entity
 	entity_t		*occupant;	// for leak file testing
-	int				bspCell;		// -2 = unassigned, -1 = opaque; InitBspTreeNodes
+	int				bspCell;		// -2 = unassigned, -1 = opaque; InitNodeCells_r
 
 	struct portal_s	*portals;	// also on nodes during construction
 } node_t;

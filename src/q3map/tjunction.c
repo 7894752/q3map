@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../code/qcommon/qfiles.h"
 #include "qbsp.h"
 
-int PointsNearLine(vec3_t pointA, vec3_t pointB, vec3_t lineEnd, vec_t tolerance);
+int ColinearEdge(vec3_t pointA, vec3_t pointB, vec3_t lineEnd, vec_t tolerance);
 
 typedef struct edgePoint_s {
 	float		intercept;
@@ -237,14 +237,14 @@ void AddPatchEdges( mapDrawSurface_t *ds ) {
 		v1 = ds->verts[i].xyz;
 		v2 = ds->verts[i + 1].xyz;
 		v3 = ds->verts[i + 2].xyz;
-		if ( PointsNearLine( v1, v2, v3, ON_EPSILON ) ) {
+		if ( ColinearEdge( v1, v2, v3, ON_EPSILON ) ) {
 			AddEdge( v1, v3, qfalse );
 		}
 
 		v1 = ds->verts[( ds->patchHeight - 1 ) * ds->patchWidth + i].xyz;
 		v2 = ds->verts[( ds->patchHeight - 1 ) * ds->patchWidth + i + 1].xyz;
 		v3 = ds->verts[( ds->patchHeight - 1 ) * ds->patchWidth + i + 2].xyz;
-		if ( PointsNearLine( v1, v2, v3, ON_EPSILON ) ) {
+		if ( ColinearEdge( v1, v2, v3, ON_EPSILON ) ) {
 			AddEdge( v1, v3, qfalse );
 		}
 	}
@@ -253,14 +253,14 @@ void AddPatchEdges( mapDrawSurface_t *ds ) {
 		v1 = ds->verts[i * ds->patchWidth].xyz;
 		v2 = ds->verts[( i + 1 ) * ds->patchWidth].xyz;
 		v3 = ds->verts[( i + 2 ) * ds->patchWidth].xyz;
-		if ( PointsNearLine( v1, v2, v3, ON_EPSILON ) ) {
+		if ( ColinearEdge( v1, v2, v3, ON_EPSILON ) ) {
 			AddEdge( v1, v3, qfalse );
 		}
 
 		v1 = ds->verts[( ds->patchWidth - 1 ) + i * ds->patchWidth].xyz;
 		v2 = ds->verts[( ds->patchWidth - 1 ) + ( i + 1 ) * ds->patchWidth].xyz;
 		v3 = ds->verts[( ds->patchWidth - 1 ) + ( i + 2 ) * ds->patchWidth].xyz;
-		if ( PointsNearLine( v1, v2, v3, ON_EPSILON ) ) {
+		if ( ColinearEdge( v1, v2, v3, ON_EPSILON ) ) {
 			AddEdge( v1, v3, qfalse );
 		}
 	}

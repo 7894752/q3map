@@ -28,7 +28,7 @@ void Com_BeginParseSession(const char *filename);
 void Com_EndParseSession(void);
 
 #define MODEL_SCALE_EPSILON 0.001f
-void LoadCollisionMap(char *collmapPath, const char *modelName, vec3_t origin, vec3_t angles, vec3_t scale);
+void LoadModelCollMap(char *collmapPath, const char *modelName, vec3_t origin, vec3_t angles, vec3_t scale);
 
 #define PLANE_HASHES 1024
 #define NORMAL_EPSILON 0.0000001
@@ -1192,10 +1192,10 @@ qboolean ParseCollMapEntity( char **data_p, vec3_t origin, vec3_t angles, vec3_t
 
 /*
 =============
-LoadCollisionMap
+LoadModelCollMap
 =============
 */
-void LoadCollisionMap( char *collmapPath, const char *modelName, vec3_t origin, vec3_t angles, vec3_t scale ) {
+void LoadModelCollMap( char *collmapPath, const char *modelName, vec3_t origin, vec3_t angles, vec3_t scale ) {
 	void	*fileData;
 	char	*parsePtr;
 
@@ -1247,7 +1247,7 @@ void ProcessMapModels(void)
 		for (i = 0; i < 3; i++)
 			if (scale[i] * scale[i] < MODEL_SCALE_EPSILON * MODEL_SCALE_EPSILON)
 				Error("entity %i: near-zero scale on at least one axis (scale = %g %g %g)\n", entity_num, scale[0], scale[1], scale[2]);
-		LoadCollisionMap(collmapPath, model, origin, angles, scale);
+		LoadModelCollMap(collmapPath, model, origin, angles, scale);
 	}
 }
 

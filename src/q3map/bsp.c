@@ -53,10 +53,10 @@ extern qboolean colorLightmaps;
 
 void ProcessWorldModel(void);
 void ProcessSubModel(void);
-void ProcessEntityPatches(entity_t *entity);
-void OpenDebugFile(void);
-void CloseDebugFile(void);
-void PortalizeWorld(bspbrush_t *brushes, tree_t *tree, qboolean leaked);
+void ProcessTerrainPatches(entity_t *entity);
+void OpenPolyFile(void);
+void ClosePolyFile(void);
+void BuildPortalsAndCells(bspbrush_t *brushes, tree_t *tree, qboolean leaked);
 void EmitDrawSurfaces(entity_t *entity, tree_t *tree);
 void FilterCollisionSurfsIntoTree(entity_t *entity, tree_t *tree);
 void Bspinfo(int count, char **fileNames);
@@ -64,15 +64,15 @@ int VisMain(int argc, char **argv);
 void OnlyEnts(void);
 void SetQ3MapErrorHandler(void);
 void InitQ3MapFileSystem(void);
-float SmoothAngleValue(const char *value, const char *name);
-void ProcessCoronaLights(void);
+float ParseSmoothAngle(const char *value, const char *name);
+void SetCoronaCutoffs(void);
 void Swap_Init(void);
 
 #define SMOOTH_ANGLE_RADIANS_PER_DEGREE ( (float) ( Q_PI / 180.0 ) )
 #define SMOOTH_ANGLE_COSINE_EPSILON 0.001f
 
 /*
-SmoothAngleValue
+ParseSmoothAngle
 
 Parses a smoothing angle option and returns its biased cosine threshold.
 Endpoint options retain the historical threshold of one.
@@ -81,7 +81,7 @@ Endpoint options retain the historical threshold of one.
 void Q3MapFatalError(const char *format, va_list args);
 void SetErrorHandler(void (*handler)(const char *, va_list));
 
-char *FS_InitFilesystemFromArgs(char *basePath, char *gameDir, char *baseGame);
+char *FS_InitToolFilesystem(char *basePath, char *gameDir, char *baseGame);
 
 /*
 ============
@@ -98,7 +98,7 @@ void ProcessWorldModel(void)
     BeginModel();
 
     entities[0].firstDrawSurf = 0;
-    ProcessEntityPatches(&entities[0]);
+    ProcessTerrainPatches(&entities[0]);
     PatchMapDrawSurfs(&entities[0]);
 
     faces = MakeStructuralBspFaceList(entities[0].brushes);
@@ -106,7 +106,7 @@ void ProcessWorldModel(void)
     MakeTreePortals(tree);
     FilterStructuralBrushesIntoTree(&entities[0], tree);
 
-    OpenDebugFile();
+    OpenPolyFile();
 
     if (FloodEntities(tree))
     {
@@ -137,9 +137,9 @@ void ProcessWorldModel(void)
         ClipSidesIntoTree(&entities[0], tree);
     }
 
-    CloseDebugFile();
+    ClosePolyFile();
 
-    PortalizeWorld(entities[0].brushes, tree, leaked);
+    BuildPortalsAndCells(entities[0].brushes, tree, leaked);
     NumberClusters(tree);
     if (!leaked)
         WritePortalFile(tree);
@@ -181,7 +181,7 @@ void ProcessSubModel(void)
     BeginModel();
     entity = &entities[entity_num];
     entity->firstDrawSurf = numMapDrawSurfs;
-    ProcessEntityPatches(entity);
+    ProcessTerrainPatches(entity);
     PatchMapDrawSurfs(entity);
 
     node = AllocNode();
@@ -300,7 +300,7 @@ InitQ3MapFileSystem
 */
 void InitQ3MapFileSystem(void)
 {
-	FS_InitFilesystemFromArgs(qdir, "", "");
+	FS_InitToolFilesystem(qdir, "", "");
 }
 
 /*
@@ -362,7 +362,7 @@ void OnlyEnts(void)
     LoadMapFile(name);
     SetModelNumbers();
     SetLightStyles();
-    ProcessCoronaLights();
+    SetCoronaCutoffs();
 
     UnparseEntitiesWithOrigins();
 
@@ -416,10 +416,10 @@ void SetQ3MapErrorHandler(void) {
 
 /*
 =============
-SmoothAngleValue
+ParseSmoothAngle
 =============
 */
-float SmoothAngleValue( const char *value, const char *name ) {
+float ParseSmoothAngle( const char *value, const char *name ) {
 	float angle;
 	float threshold;
 
@@ -617,17 +617,17 @@ int main(int argc, char **argv)
         }
         else if (!stricmp(argv[i], "-curveSmoothAngle"))
         {
-            curveSmoothAngle = SmoothAngleValue(argv[i + 1], "curveSmoothAngle");
+            curveSmoothAngle = ParseSmoothAngle(argv[i + 1], "curveSmoothAngle");
             i++;
         }
         else if (!stricmp(argv[i], "-terrainSmoothAngle"))
         {
-            terrainSmoothAngle = SmoothAngleValue(argv[i + 1], "terrainSmoothAngle");
+            terrainSmoothAngle = ParseSmoothAngle(argv[i + 1], "terrainSmoothAngle");
             i++;
         }
         else if (!stricmp(argv[i], "-brushSmoothAngle"))
         {
-            brushSmoothAngle = SmoothAngleValue(argv[i + 1], "brushSmoothAngle");
+            brushSmoothAngle = ParseSmoothAngle(argv[i + 1], "brushSmoothAngle");
             i++;
         }
         else if (!stricmp(argv[i], "-colorlmaps"))
@@ -692,7 +692,7 @@ int main(int argc, char **argv)
 
         SetModelNumbers();
         SetLightStyles();
-        ProcessCoronaLights();
+        SetCoronaCutoffs();
         ProcessModels();
         EndBSPFile();
 

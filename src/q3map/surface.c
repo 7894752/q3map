@@ -63,10 +63,10 @@ extern void CheckWindingPlane( winding_t *w, vec3_t normal, vec_t dist );
 /* Forward declarations. */
 mapDrawSurface_t *AllocDrawSurf( void );
 mapDrawSurface_t *DrawSurfaceForSide(bspbrush_t *b, side_t *s, winding_t *w, qboolean globalTexture);
-void WriteDebugSideToFile(side_t *side, winding_t *w);
-FILE *OpenDebugFile( void );
+void WriteSideToPolyFile(side_t *side, winding_t *w);
+FILE *OpenPolyFile( void );
 void AddSideRef( side_t *side );
-void CloseDebugFile( void );
+void ClosePolyFile( void );
 void EmitPatchCollide( mapDrawSurface_t *ds );
 void EmitTerrainCollide( mapDrawSurface_t *ds );
 void ClipSideIntoTree_r( winding_t *w, side_t *side, node_t *node );
@@ -78,7 +78,7 @@ void SubdivideDrawSurf( mapDrawSurface_t *ds, winding_t *w, float subdivisions )
 void SubdivideDrawSurfs(entity_t *e, tree_t *tree);
 void ClipSidesIntoTree(entity_t *e, tree_t *tree);
 void MergeSides( entity_t *e, tree_t *tree );
-void WriteDebugSurfaceToFile( terrainSurface_t *terrain );
+void WriteTerrainSurfaceToPolyFile( terrainSurface_t *terrain );
 
 #include "../common/q_round.h"
 
@@ -100,10 +100,10 @@ mapDrawSurface_t *AllocDrawSurf( void ) {
 
 /*
 =============
-OpenDebugFile
+OpenPolyFile
 =============
 */
-FILE *OpenDebugFile( void ) {
+FILE *OpenPolyFile( void ) {
 	char filename[128];
 
 	sprintf( filename, "%s.poly", source );
@@ -113,10 +113,10 @@ FILE *OpenDebugFile( void ) {
 
 /*
 =============
-CloseDebugFile
+ClosePolyFile
 =============
 */
-void CloseDebugFile( void ) {
+void ClosePolyFile( void ) {
 	if ( debugPolyFile ) {
 		fclose( debugPolyFile );
 		debugPolyFile = NULL;
@@ -125,10 +125,10 @@ void CloseDebugFile( void ) {
 
 /*
 =============
-WriteDebugSideToFile
+WriteSideToPolyFile
 =============
 */
-void WriteDebugSideToFile(side_t *side, winding_t *w) {
+void WriteSideToPolyFile(side_t *side, winding_t *w) {
 	shaderInfo_t *si;
 	int i;
 	if (!debugPolyFile)
@@ -146,10 +146,10 @@ void WriteDebugSideToFile(side_t *side, winding_t *w) {
 
 /*
 =============
-WriteDebugSurfaceToFile
+WriteTerrainSurfaceToPolyFile
 =============
 */
-void WriteDebugSurfaceToFile( terrainSurface_t *terrain ) {
+void WriteTerrainSurfaceToPolyFile( terrainSurface_t *terrain ) {
 	const char *shader;
 	int vertexIndex;
 	int i;
@@ -676,7 +676,7 @@ void ClipSidesIntoTree(entity_t *e, tree_t *tree) {
 			if (!si) continue;
 			if (si->autosprite) w = side->winding;
 							if (si->surfaceFlags & SURF_NODRAW) {
-				if (si->surfaceFlags & SURF_CASTSHADOW) WriteDebugSideToFile(side, w);
+				if (si->surfaceFlags & SURF_CASTSHADOW) WriteSideToPolyFile(side, w);
 				continue;
 			}
 			if (side->bevel) Error("monkey tried to create draw surface for brush bevel");
